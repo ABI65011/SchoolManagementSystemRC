@@ -140,6 +140,15 @@
                 </a>
             </li>
             <!--end::Fullscreen Toggle-->
+            <!-- Default switch -->
+            <li class="nav-item d-flex align-items-center">
+                <i class="bi bi-sun-fill text-warning"></i>
+                <div class="form-check form-switch ms-2">
+                    <input class="form-check-input" type="checkbox" role="switch" id="themeSwitcher">
+                </div>
+                <i class="bi bi-moon-fill ms-1"></i>
+            </li>
+            <!--end::Default switch -->
             <!--begin::User Menu Dropdown ./assets/img/user2-160x160.jpg-->
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
