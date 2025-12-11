@@ -28,7 +28,9 @@ return new class extends Migration
             $table->string('o_level_file')->nullable();
             $table->string('other_file')->nullable();
             $table->boolean('repeat_class')->default(false);
+            $table->string('repeated_class')->nullable();
             $table->boolean('skip_class')->default(false);
+            $table->boolean('skipped_class')->nullable();
             $table->timestamps();
         });
     }

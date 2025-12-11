@@ -15,6 +15,10 @@ Route::middleware('auth', 'auth.session')->group(function () {
         Route::get('/', 'index')->name('dashboard');
     });
 
+    Route::get('/test-form', function () {
+        return view('my-tests.formtest');
+    })->name('test-form');
+
     //  Student Management Routes -->
     Route::controller(StudentsController::class)->group(function() {
         Route::get('/students', 'index')->name('students.index');

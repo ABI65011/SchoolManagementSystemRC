@@ -2,13 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AcademicLevel;
+use App\Helpers\AppHelper;
+use App\Helpers\ApplyingSection;
+use App\Helpers\CareerAspirations;
+use App\Helpers\DisciplineAction;
 use App\Helpers\IDType;
+use App\Helpers\ReligiousAffiliation;
+use App\Helpers\Subjects;
 use App\Models\AcademicHistory;
 use App\Models\CareerAspiration;
 use App\Models\DisciplineHistory;
 use App\Models\MedicalHistory;
 use App\Models\students;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class StudentsController extends Controller
@@ -40,30 +49,110 @@ class StudentsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            //Students validation
             'user_id' => 'required|exists:users,id',
+            'admission_year' => 'required',
+            'joining_class' => 'required',
             'first_name' => 'required',
             'middle_name' => 'nullable',
             'last_name' => 'required',
             'dob' => 'required|date',
             'gender' => 'required|string|max:50',
+            'citizenship' => 'required|array',
             'id_type' => 'required|in:' . implode(',', array_column(IDType::cases(), 'value')),
-            'id_no' => 'required|string|max:100|unique:students,id_no',
-            'id_image_path' => 'required|image|max:2048',
+            'id_no' => 'required|string|    max:100|unique:students,id_no',
+            'id_image_path' => 'required|string|max:2048',
+            'a_level_combination' => 'nullable',
+            'applying_section' => 'required|in:' . implode(',', array_column( ApplyingSection::cases(), 'value')),
+            'religious_affiliation' => 'required|in:' . implode(',', array_column( ReligiousAffiliation::cases(), 'value')),
+            'other_religious_affiliation' => 'nullable',
+            'has_aditional_info' => 'boolean',
+            'additional_info' => 'nullable',
             'spoken_languages' => 'required|array',
+
+            //Academic History validation
+            'academic_level' => 'required|in:' . implode(',', array_column( AcademicLevel::cases(), 'value')),
+            'other_academic_level' => 'nullable',
+            'school_name' => 'required',
+            'from_year' => 'required',
+            'to_year' => 'required',
+            'aggregate_score' => 'required',
+            'average_position' => 'nullable',
+            'grade' => 'nullable',
+            'ple_file' => 'nullable|string|max:2048',
+            'o_level_file' => 'nullable|string|max:2048',
+            'other_file' => 'nullable|string|max:2048',
+            'repeat_class' => 'boolean',
+            'repeated_class' => 'nullable',
+            'skip_class' => 'boolean',
+            'skipped_class' => 'nullable',
+
+            //Medical History validation
+            'has_health_issues' => 'boolean',
+            'health_issues' => 'nullable',
+            'files' => 'nullable|string|max:2048',
+
+            //Discipline History validation
+            'has_disciplinary_issues' => 'boolean',
+            'disciplinary_issues' => 'nullable|in:' . implode(',', array_column( DisciplineAction::cases(), 'value')),
+            'reason' => 'nullable',
+
+            //Career Aspiration validation
+            'aspiration' => 'nullable|in:' . implode(',', array_column( CareerAspirations::cases(), 'value')),
+            'other_aspiration' => 'nullable',
+            'best_done_subjects' => 'nullable|in:' . implode(',', array_column( Subjects::cases(), 'value')),
+            'other_best_done_subjects' => 'nullable',
+            'worst_done_subjects' => 'nullable|in:' . implode(',', array_column( Subjects::cases(), 'value')),
+            'other_worst_done_subjects' => 'nullable',
+            'favorite_subjects' => 'nullable|in:' . implode(',', array_column( Subjects::cases(), 'value')),
+            'other_favorite_subjects' => 'nullable',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
+            return back()
+                ->with('validation', 'Check the fields')
+                ->withErrors($validator->errors())
                 ->withInput();
         }
-        $validated = $validator->validated();
 
-        if ($request->hasFile('id_image_path')) {
+        $validated = $validator->validated();
+        dd($validated);
+
+        try {
+            DB::beginTransaction();
+
+            $students = students::create($validated);
+            $validated['student_id'] = $students->id;
+
+            $academicHistory = AcademicHistory::create($validated);
+            $medicalHistory = MedicalHistory::create($validated);
+            $disciplineHistory = DisciplineHistory::create($validated);
+            $careerAspiration = CareerAspiration::create($validated);
+
+            DB::commit();
             $validated['id_image_path'] = $request->file('id_image_path')->store('identity', 'public');
+
+            $validated['ple_file'] = $request->file('ple_file')->store('academicFiles', 'public');
+
+            $validated['o_level_file'] = $request->file('o_level_file')->store('academicFiles', 'public');
+
+            $validated['other_file'] = $request->file('other_file')->store('academicFiles', 'public');
+
+            $validated['files'] = $request->file('files')->store('medicalFiles', 'public');
+
+            return redirect()->route('students.index')->with('success', 'Student created successfully.');
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Storage::delete([
+                $validated['id_image_path'] ?? null,
+                $validated['ple_file'] ?? null,
+                $validated['o_level_file'] ?? null,
+                $validated['other_file'] ?? null,
+                $validated['files'] ?? null,
+            ]);
+            return back()->with('error', AppHelper::buildExceptionMessage($th->getMessage()))->withInput();
         }
-        students::create($validated);
-        return redirect()->route('students.index')->with('success', 'Student created successfully.');
     }
 
     /**
