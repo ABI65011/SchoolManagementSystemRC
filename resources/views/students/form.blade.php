@@ -7,19 +7,19 @@
                 <button type="button" class="btn btn-indigo btn-circle" data-step="step-1">
                     1
                 </button>
-                <p>Step 1</p>
+                <p>Admission & Personal Data</p>
             </div>
             <div class="steps-step">
                 <button type="button" class="btn btn-secondary btn-circle" disabled data-step="step-2">
                     2
                 </button>
-                <p>Step 2</p>
+                <p>Academic History</p>
             </div>
             <div class="steps-step">
                 <button type="button" class="btn btn-secondary btn-circle" disabled data-step="step-3">
                     3
                 </button>
-                <p>Step 3</p>
+                <p>Medical, Discipline, Career, Misc    </p>
             </div>
         </div>
     </div>
@@ -28,9 +28,81 @@
         @csrf
 
         <!-- ===== STEP 1 – Core bio / admission ================================== -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">User Account</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="user_option" id="existing_user"
+                                        value="existing" checked>
+                                    <label class="form-check-label" for="existing_user">
+                                        Use Existing User Account
+                                    </label>
+                                </div>
+
+                                <div id="existing-user-section">
+                                    <label class="required-field">Select User</label>
+                                    <select name="user_id" class="form-select" id="user_id">
+                                        <option value="">-- Select User --</option>
+                                        @foreach ($users as $user)
+                                            <option value="{{ $user->id }}"
+                                                {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                                {{ $user->name }} ({{ $user->email }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="form-text text-muted">
+                                        Select an existing user account to link with this student
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="user_option" id="new_user"
+                                        value="new">
+                                    <label class="form-check-label" for="new_user">
+                                        Create New User Account
+                                    </label>
+                                </div>
+
+                                <div id="new-user-section" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label class="required-field">Email Address</label>
+                                            <input type="email" name="email" class="form-control"
+                                                value="{{ old('email') }}" placeholder="student@example.com">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="required-field">Password</label>
+                                            <input type="password" name="password" class="form-control"
+                                                placeholder="••••••••">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="required-field">Confirm Password</label>
+                                            <input type="password" name="password_confirmation" class="form-control"
+                                                placeholder="••••••••">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="create_new_user" value="1">
+                                    <small class="form-text text-muted">
+                                        A new user account will be created with student role
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row setup-content" id="step-1">
             <div class="col-md-12">
-                <h3 class="step-title"><strong>Step 1 – Admission & Personal Data</strong></h3>
+                <h3 class="step-title"><strong>Admission & Personal Data</strong></h3>
 
                 <div class="row mb-3">
                     <div class="col-md-3">
@@ -70,12 +142,13 @@
                     </div>
                     <div class="col-md-4">
                         <label class="required-field">First Name</label>
-                        <input type="text" name="first_name" value="{{ old('first_name') }}" class="form-control"
-                            required>
+                        <input type="text" name="first_name" value="{{ old('first_name') }}"
+                            class="form-control" required>
                     </div>
                     <div class="col-md-4">
                         <label>Other Names</label>
-                        <input type="text" name="middle_name" value="{{ old('middle_name') }}" class="form-control">
+                        <input type="text" name="middle_name" value="{{ old('middle_name') }}"
+                            class="form-control">
                     </div>
                 </div>
 
@@ -93,7 +166,8 @@
                     </div>
                     <div class="col-md-3">
                         <label class="required-field">Date of Birth</label>
-                        <input type="date" name="dob" value="{{ old('dob') }}" class="form-control" required>
+                        <input type="date" name="dob" value="{{ old('dob') }}" class="form-control"
+                            required>
                     </div>
                     <div class="col-md-3">
                         <label class="required-field">Citizenship (multiple)</label>
@@ -159,7 +233,7 @@
 
                 <div class="d-flex justify-content-end">
                     <button class="btn btn-indigo nextBtn" type="button">
-                        Next <i class="fas fa-arrow-right ms-1"></i>
+                        Next <i class="bi bi-arrow-right-circle-fill ms-1"></i>
                     </button>
                 </div>
             </div>
@@ -168,7 +242,7 @@
         <!-- ===== STEP 2 – Academic History ======================================= -->
         <div class="row setup-content" id="step-2" style="display: none;">
             <div class="col-md-12">
-                <h3 class="step-title"><strong>Step 2 – Academic History</strong></h3>
+                <h3 class="step-title"><strong>Academic History</strong></h3>
 
                 <div id="academic-history-wrapper">
                     @if (count(old('academic_history', [])) > 0)
@@ -292,10 +366,10 @@
 
                 <div class="d-flex justify-content-between mt-4">
                     <button class="btn btn-secondary prevBtn" type="button">
-                        <i class="fas fa-arrow-left me-1"></i> Previous
+                        <i class="bi bi-arrow-left-circle-fill me-1"></i> Previous
                     </button>
                     <button class="btn btn-indigo nextBtn" type="button">
-                        Next <i class="fas fa-arrow-right ms-1"></i>
+                        Next <i class="bi bi-arrow-right-circle-fill ms-1"></i>
                     </button>
                 </div>
             </div>
@@ -304,7 +378,7 @@
         <!-- ===== STEP 3 – Medical, Discipline, Career, Misc ===================== -->
         <div class="row setup-content" id="step-3" style="display: none;">
             <div class="col-md-12">
-                <h3 class="step-title"><strong>Step 3 – Health, Conduct & Career</strong></h3>
+                <h3 class="step-title"><strong>Health, Conduct & Career</strong></h3>
 
                 <div class="row mb-4">
                     <div class="col-md-6">
@@ -401,7 +475,7 @@
 
                 <div class="d-flex justify-content-between">
                     <button class="btn btn-secondary prevBtn" type="button">
-                        <i class="fas fa-arrow-left me-1"></i> Previous
+                        <i class="bi bi-arrow-left-circle-fill me-1"></i> Previous
                     </button>
                     <button class="btn btn-success" type="submit">
                         <i class="fas fa-paper-plane me-1"></i> Submit Application

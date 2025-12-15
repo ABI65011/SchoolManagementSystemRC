@@ -1,9 +1,11 @@
 @extends('layouts.main')
+@section('')
 
+@endsection
 @section('title', 'Register Student')
 {{-- @section('plugins.Select2', true) AdminLTE plugin flag --}}
 @section('header')
-   <style>
+    <style>
         body {
             background-color: #f4f6f9;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -149,53 +151,69 @@
         }
 
         .has-error .form-control,
-    .has-error .form-select,
-    .has-error .select2-selection {
-        border-color: #dc3545 !important;
-        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
-    }
+        .has-error .form-select,
+        .has-error .select2-selection {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+        }
 
-    .error-text {
-        color: #dc3545;
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-        display: block;
-    }
+        .error-text {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
 
-    .steps-step button:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
+        .steps-step button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
-    .steps-step button.btn-indigo {
-        background-color: #6610f2;
-        border-color: #6610f2;
-    }
+        .steps-step button.btn-indigo {
+            background-color: #6610f2;
+            border-color: #6610f2;
+        }
 
-    .steps-step button.btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-    }
+        .steps-step button.btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
 
-    .btn-indigo {
-        background-color: #6610f2;
-        border-color: #6610f2;
-        color: white;
-    }
+        .btn-indigo {
+            background-color: #6610f2;
+            border-color: #6610f2;
+            color: white;
+        }
 
-    .btn-indigo:hover {
-        background-color: #5a0cd8;
-        border-color: #5a0cd8;
-    }
+        .btn-indigo:hover {
+            background-color: #5a0cd8;
+            border-color: #5a0cd8;
+        }
 
-    .setup-content {
-        animation: fadeIn 0.3s ease-in-out;
-    }
+        .setup-content {
+            animation: fadeIn 0.3s ease-in-out;
+        }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <style>
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+
+        .is-invalid:focus {
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+        }
     </style>
 
     <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
@@ -209,158 +227,168 @@
             <div class="card-header">
                 <h3 class="card-title">Register Student</h3>
             </div>
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <h5 class="alert-heading">Please fix the following errors:</h5>
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             @include('students.form')
         </div>
     </div>
 @endsection
 @section('javascript')
-<script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
-<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('js/mdb.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/mdb.min.js') }}"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-    $(document).ready(function () {
-        // Initialize Select2
-        if (typeof $.fn.select2 !== 'undefined') {
-            $('.select2-multiple').select2({
-                placeholder: 'Select options',
-                width: '100%'
-            });
-        }
+        $(document).ready(function() {
 
-        // Step navigation logic
-        var currentStep = 1;
-        var totalSteps = 3;
-
-        // Function to show a specific step
-        function showStep(stepNumber) {
-            // Hide all steps
-            $('.setup-content').hide();
-
-            // Show the selected step
-            $('#step-' + stepNumber).show();
-
-            // Update step indicators
-            $('.steps-step button').removeClass('btn-indigo').addClass('btn-secondary');
-            $('.steps-step button[data-step="step-' + stepNumber + '"]').removeClass('btn-secondary').addClass('btn-indigo');
-
-            // Update current step
-            currentStep = stepNumber;
-        }
-
-        // Initialize first step
-        showStep(1);
-
-        // Step button click handlers
-        $('.steps-step button').click(function () {
-            if (!$(this).is(':disabled')) {
-                var step = $(this).data('step');
-                var stepNumber = parseInt(step.split('-')[1]);
-                showStep(stepNumber);
+            if (typeof $.fn.select2 !== 'undefined') {
+                $('.select2-multiple').select2({
+                    placeholder: 'Select options',
+                    width: '100%'
+                });
             }
-        });
 
-        // Next button click
-        $('.nextBtn').click(function () {
-            // Validate current step
-            if (validateStep(currentStep)) {
-                if (currentStep < totalSteps) {
-                    showStep(currentStep + 1);
+            var currentStep = 1;
+            var totalSteps = 3;
+
+
+            function showStep(stepNumber) {
+
+                $('.setup-content').hide();
+
+                $('#step-' + stepNumber).show();
+
+
+                $('.steps-step button').removeClass('btn-indigo').addClass('btn-secondary');
+                $('.steps-step button[data-step="step-' + stepNumber + '"]').removeClass('btn-secondary').addClass(
+                    'btn-indigo');
+
+
+                currentStep = stepNumber;
+            }
+
+
+            showStep(1);
+
+
+            $('.steps-step button').click(function() {
+                if (!$(this).is(':disabled')) {
+                    var step = $(this).data('step');
+                    var stepNumber = parseInt(step.split('-')[1]);
+                    showStep(stepNumber);
                 }
-            }
-        });
+            });
 
-        // Previous button click
-        $('.prevBtn').click(function () {
-            if (currentStep > 1) {
-                showStep(currentStep - 1);
-            }
-        });
 
-        // Step validation function - FIXED
-        function validateStep(stepNumber) {
-            var isValid = true;
-            var stepElement = $('#step-' + stepNumber);
+            $('.nextBtn').click(function() {
 
-            // Clear previous error states
-            stepElement.find('.has-error').removeClass('has-error');
-            stepElement.find('.error-text').remove();
-
-            // Validate required fields in current step
-            stepElement.find('[required]').each(function () {
-                var field = $(this);
-                var value = field.val();
-                var fieldType = field.attr('type');
-                var isSelect = field.is('select');
-                var isSelect2 = field.hasClass('select2-multiple');
-
-                // Handle Select2 multiple selects
-                if (isSelect2) {
-                    var select2Data = field.select2('data');
-                    if (select2Data.length === 0) {
-                        field.closest('.mb-3').addClass('has-error');
-                        field.after('<div class="error-text text-danger small mt-1">This field is required</div>');
-                        isValid = false;
+                if (validateStep(currentStep)) {
+                    if (currentStep < totalSteps) {
+                        showStep(currentStep + 1);
                     }
                 }
-                // Handle regular selects
-                else if (isSelect && !value) {
-                    field.closest('.mb-3').addClass('has-error');
-                    field.after('<div class="error-text text-danger small mt-1">This field is required</div>');
-                    isValid = false;
+            });
+
+
+            $('.prevBtn').click(function() {
+                if (currentStep > 1) {
+                    showStep(currentStep - 1);
                 }
-                // Handle file inputs
-                else if (fieldType === 'file') {
-                    if (field[0].files.length === 0) {
-                        field.closest('.mb-3').addClass('has-error');
-                        field.after('<div class="error-text text-danger small mt-1">Please upload a file</div>');
-                        isValid = false;
-                    } else {
-                        // Check file size (2MB limit)
-                        var file = field[0].files[0];
-                        if (file.size > 2 * 1024 * 1024) {
+            });
+
+            function validateStep(stepNumber) {
+                var isValid = true;
+                var stepElement = $('#step-' + stepNumber);
+
+                stepElement.find('.has-error').removeClass('has-error');
+                stepElement.find('.error-text').remove();
+
+                stepElement.find('[required]').each(function() {
+                    var field = $(this);
+                    var value = field.val();
+                    var fieldType = field.attr('type');
+                    var isSelect = field.is('select');
+                    var isSelect2 = field.hasClass('select2-multiple');
+
+                    if (isSelect2) {
+                        var select2Data = field.select2('data');
+                        if (select2Data.length === 0) {
                             field.closest('.mb-3').addClass('has-error');
-                            field.after('<div class="error-text text-danger small mt-1">File size must be less than 2MB</div>');
+                            field.after(
+                                '<div class="error-text text-danger small mt-1">This field is required</div>'
+                            );
                             isValid = false;
                         }
                     }
-                }
-                // Handle text/date/number inputs
-                else if (!value && value !== 0) {
-                    field.closest('.mb-3').addClass('has-error');
-                    field.after('<div class="error-text text-danger small mt-1">This field is required</div>');
-                    isValid = false;
-                }
-            });
+                    else if (isSelect && !value) {
+                        field.closest('.mb-3').addClass('has-error');
+                        field.after(
+                            '<div class="error-text text-danger small mt-1">This field is required</div>'
+                        );
+                        isValid = false;
+                    }
+                    else if (fieldType === 'file') {
+                        if (field[0].files.length === 0) {
+                            field.closest('.mb-3').addClass('has-error');
+                            field.after(
+                                '<div class="error-text text-danger small mt-1">Please upload a file</div>'
+                            );
+                            isValid = false;
+                        } else {
 
-            if (!isValid) {
-                // Scroll to first error
-                $('html, body').animate({
-                    scrollTop: stepElement.find('.has-error').first().offset().top - 100
-                }, 500);
+                            var file = field[0].files[0];
+                            if (file.size > 2 * 1024 * 1024) {
+                                field.closest('.mb-3').addClass('has-error');
+                                field.after(
+                                    '<div class="error-text text-danger small mt-1">File size must be less than 2MB</div>'
+                                );
+                                isValid = false;
+                            }
+                        }
+                    }
+                    else if (!value && value !== 0) {
+                        field.closest('.mb-3').addClass('has-error');
+                        field.after(
+                            '<div class="error-text text-danger small mt-1">This field is required</div>'
+                        );
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    $('html, body').animate({
+                        scrollTop: stepElement.find('.has-error').first().offset().top - 100
+                    }, 500);
+                }
+
+                return isValid;
             }
 
-            return isValid;
-        }
+            $('#has_health_issues').change(function() {
+                const show = $(this).val() === '1';
+                $('#health-details').toggle(show);
+            });
 
-        // Toggle health issues details
-        $('#has_health_issues').change(function () {
-            const show = $(this).val() === '1';
-            $('#health-details').toggle(show);
-        });
+            $('#has_disciplinary_issues').change(function() {
+                const show = $(this).val() === '1';
+                $('#discipline-details').toggle(show);
+            });
 
-        // Toggle disciplinary issues details
-        $('#has_disciplinary_issues').change(function () {
-            const show = $(this).val() === '1';
-            $('#discipline-details').toggle(show);
-        });
+            let academicIndex =
+                {{ count(old('academic_history', [])) > 0 ? count(old('academic_history', [])) : 1 }};
 
-        // Dynamic academic block management
-        let academicIndex = {{ count(old('academic_history', [])) > 0 ? count(old('academic_history', [])) : 1 }};
-
-        $('#add-academic').click(function () {
-            const html = `
+            $('#add-academic').click(function() {
+                const html = `
                 <div class="card mb-3 academic-block">
                     <div class="card-body">
                         <div class="row">
@@ -401,48 +429,56 @@
                         </div>
                     </div>
                 </div>`;
-            $('#academic-history-wrapper').append(html);
-            academicIndex++;
-        });
+                $('#academic-history-wrapper').append(html);
+                academicIndex++;
+            });
 
-        $(document).on('click', '.remove-academic', function () {
-            $(this).closest('.academic-block').remove();
-        });
+            $(document).on('click', '.remove-academic', function() {
+                $(this).closest('.academic-block').remove();
+            });
 
-        // FIXED: Form submission validation
-        $('#studentForm').submit(function (e) {
-            // Don't prevent default here - we'll handle validation differently
+            $('#studentForm').on('submit', function(e) {
+                e.preventDefault();
 
-            // Validate all steps
-            var allValid = true;
-            var firstInvalidStep = null;
-
-            for (var i = 1; i <= totalSteps; i++) {
-                if (!validateStep(i)) {
-                    allValid = false;
-                    if (firstInvalidStep === null) {
-                        firstInvalidStep = i;
+                let firstInvalid = null;
+                for (let i = 1; i <= totalSteps; i++) {
+                    if (!validateStep(i) && firstInvalid === null) {
+                        firstInvalid = i;
                     }
                 }
-            }
 
-            if (!allValid) {
-                e.preventDefault(); // Only prevent if validation fails
-                // Show the first step with errors
-                if (firstInvalidStep !== null) {
-                    showStep(firstInvalidStep);
 
-                    // Scroll to top of form
-                    $('html, body').animate({
+                if (firstInvalid !== null) {
+                    showStep(firstInvalid);
+                    $('html,body').animate({
                         scrollTop: $('.steps-form').offset().top - 50
                     }, 500);
+                    return;
                 }
-                return false;
-            }
 
-            // If all valid, allow the form to submit normally
-            return true;
+
+                this.submit();
+            });
+
         });
-    });
-</script>
+        $(document).ready(function() {
+
+            $('input[name="user_option"]').change(function() {
+                if ($(this).val() === 'existing') {
+                    $('#existing-user-section').show();
+                    $('#new-user-section').hide();
+                    $('#new-user-section input').prop('required', false);
+                    $('#existing-user-section select').prop('required', true);
+                } else {
+                    $('#existing-user-section').hide();
+                    $('#new-user-section').show();
+                    $('#existing-user-section select').prop('required', false);
+                    $('#new-user-section input').prop('required', true);
+                }
+            });
+
+
+            $('input[name="user_option"]:checked').trigger('change');
+        });
+    </script>
 @endsection

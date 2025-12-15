@@ -8,6 +8,7 @@ class MedicalHistory extends Model
 {
 
     protected $fillable = [
+        'students_id',
         'has_health_issues',
         'health_issues',
         'files',
@@ -15,6 +16,6 @@ class MedicalHistory extends Model
 
     public function student()
     {
-        return $this->belongsTo(students::class, 'student_id');
+        return $this->belongsTo(students::class, 'students_id');
     }
 }

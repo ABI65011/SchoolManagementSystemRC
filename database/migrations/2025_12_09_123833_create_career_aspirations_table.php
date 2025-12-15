@@ -2,6 +2,7 @@
 
 use App\Helpers\CareerAspirations;
 use App\Helpers\Subjects;
+use App\Models\students;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +16,7 @@ return new class extends Migration
     {
         Schema::create('career_aspirations', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(students::class)->constrained()->onDelete('cascade');
             $table->enum('aspiration', array_column(CareerAspirations::cases(), 'value'))->nullable();
             $table->string('other_aspiration')->nullable();
             $table->enum('best_done_subjects', array_column(Subjects::cases(), 'value'))->nullable();

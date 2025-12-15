@@ -8,6 +8,7 @@ class DisciplineHistory extends Model
 {
 
     protected $fillable = [
+        'students_id',
         'has_disciplinary_issues',
         'disciplinary_issues',
         'reason',
@@ -15,6 +16,6 @@ class DisciplineHistory extends Model
 
     public function student()
     {
-        return $this->belongsTo(students::class, 'student_id');
+        return $this->belongsTo(students::class, 'students_id');
     }
 }

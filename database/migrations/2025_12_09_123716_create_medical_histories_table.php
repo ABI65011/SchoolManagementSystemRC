@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\students;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('medical_histories', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(students::class)->constrained()->onDelete('cascade');
             $table->boolean('has_health_issues')->default(false);
             $table->string('health_issues')->nullable();
             $table->string('files')->nullable();

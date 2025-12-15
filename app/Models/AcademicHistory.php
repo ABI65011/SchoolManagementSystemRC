@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AcademicHistory extends Model
 {
     protected $fillable = [
-        'student_id',
+        'students_id',
         'academic_level',
         'other_academic_level',
         'school_name',
@@ -30,6 +30,6 @@ class AcademicHistory extends Model
 
     public function student()
     {
-        return $this->belongsTo(students::class, 'student_id');
+        return $this->belongsTo(students::class, 'students_id');
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CareerAspiration extends Model
 {
     protected $fillable = [
+        'students_id',
         'aspiration',
         'other_aspiration',
         'best_done_subjects',
@@ -19,6 +20,6 @@ class CareerAspiration extends Model
 
     public function student()
     {
-        return $this->belongsTo(students::class, 'student_id');
+        return $this->belongsTo(students::class, 'students_id');
     }
 }

@@ -34,7 +34,6 @@ class students extends Model
         'spoken_languages'  => 'array',
     ];
 
-    /* Accessor to show full name in tables */
     protected function fullName(): Attribute
     {
         return Attribute::make(
@@ -49,21 +48,21 @@ class students extends Model
 
     public function academicHistories()
     {
-        return $this->hasMany(AcademicHistory::class, 'student_id');
+        return $this->hasMany(AcademicHistory::class, 'students_id');
     }
 
     public function disciplineHistory()
     {
-        return $this->hasOne(DisciplineHistory::class, 'student_id');
+        return $this->hasOne(DisciplineHistory::class, 'students_id');
     }
 
     public function medicalHistory()
     {
-        return $this->hasOne(MedicalHistory::class, 'student_id');
+        return $this->hasOne(MedicalHistory::class, 'students_id');
     }
 
     public function careerAspiration()
     {
-        return $this->hasOne(CareerAspiration::class, 'student_id');
+        return $this->hasOne(CareerAspiration::class, 'students_id');
     }
 }
