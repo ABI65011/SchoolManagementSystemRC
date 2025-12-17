@@ -19,8 +19,8 @@ return new class extends Migration
             $table->enum('academic_level', array_column(AcademicLevel::cases(), 'value'));
             $table->string('other_academic_level')->nullable();
             $table->string('school_name');
-            $table->date('from_year');
-            $table->date('to_year');
+            $table->year('from_year');
+            $table->year('to_year');
             $table->string('aggregate_score');
             $table->string('average_position')->nullable();
             $table->string('grade')->nullable();

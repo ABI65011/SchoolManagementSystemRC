@@ -24,8 +24,8 @@ class AcademicHistory extends Model
     ];
 
     protected $casts = [
-        'from_year' => 'date',
-        'to_year'   => 'date',
+        // 'from_year' => 'date',
+        // 'to_year'   => 'date',
     ];
 
     public function student()

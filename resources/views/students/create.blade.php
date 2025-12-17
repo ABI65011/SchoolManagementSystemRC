@@ -7,7 +7,8 @@
 @section('header')
     <style>
         body {
-            background-color: #f4f6f9;
+            background-color: var(--bs-body-bg);
+            color: var(--bs-body-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
@@ -15,10 +16,13 @@
             box-shadow: 0 0 1px rgba(0, 0, 0, .125), 0 1px 3px rgba(0, 0, 0, .2);
             margin-bottom: 1rem;
             border-radius: 0.5rem;
+
+            background-color: var(--bs-card-bg, var(--bs-body-bg));
+            border: 1px solid var(--bs-border-color, rgba(0, 0, 0, .125));
+        }
         }
 
         .card-header {
-            background-color: #007bff;
             color: white;
             border-radius: 0.5rem 0.5rem 0 0 !important;
         }
@@ -91,7 +95,6 @@
 
         .setup-content {
             padding: 20px;
-            background-color: white;
             border-radius: 0.5rem;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
@@ -100,7 +103,9 @@
         .form-select {
             border-radius: 0.375rem;
             padding: 0.5rem 0.75rem;
-            border: 1px solid #ced4da;
+            border: 1px solid var(--bs-border-color);
+            background-color: var(--bs-body-bg);
+            color: var(--bs-body-color);
         }
 
         .form-control:focus,
@@ -112,7 +117,6 @@
         label {
             font-weight: 500;
             margin-bottom: 0.5rem;
-            color: #495057;
         }
 
         .required-field::after {
@@ -144,10 +148,10 @@
         }
 
         .step-title {
-            color: #343a40;
             border-bottom: 2px solid #007bff;
             padding-bottom: 10px;
             margin-bottom: 25px;
+            font-weight: 700;
         }
 
         .has-error .form-control,
@@ -205,14 +209,28 @@
                 transform: translateY(0);
             }
         }
-    </style>
-    <style>
+
         .is-invalid {
             border-color: #dc3545 !important;
         }
 
         .is-invalid:focus {
             box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+        }
+
+        .current-id-image {
+            max-width: 200px;
+            max-height: 150px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .file-preview {
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #6c757d;
         }
     </style>
 
@@ -461,7 +479,7 @@
             });
 
         });
-        $(document).ready(function() {
+        /*$(document).ready(function() {
 
             $('input[name="user_option"]').change(function() {
                 if ($(this).val() === 'existing') {
@@ -479,6 +497,6 @@
 
 
             $('input[name="user_option"]:checked').trigger('change');
-        });
+        });*/
     </script>
 @endsection

@@ -19,7 +19,7 @@
                 <button type="button" class="btn btn-secondary btn-circle" disabled data-step="step-3">
                     3
                 </button>
-                <p>Medical, Discipline, Career, Misc    </p>
+                <p>Medical, Discipline, Career, Misc </p>
             </div>
         </div>
     </div>
@@ -36,7 +36,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="radio" name="user_option" id="existing_user"
                                         value="existing" checked>
@@ -60,36 +60,61 @@
                                         Select an existing user account to link with this student
                                     </small>
                                 </div>
-                            </div>
+                            </div> --}}
 
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-check mb-3">
-                                    <input class="form-check-input" type="radio" name="user_option" id="new_user"
-                                        value="new">
+                                    {{-- <input class="form-check-input" type="radio" name="user_option" id="new_user"
+                                        value="new"> --}}
                                     <label class="form-check-label" for="new_user">
                                         Create New User Account
                                     </label>
                                 </div>
 
-                                <div id="new-user-section" style="display: none;">
+                                <div>
                                     <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label class="required-field">Email Address</label>
-                                            <input type="email" name="email" class="form-control"
-                                                value="{{ old('email') }}" placeholder="student@example.com">
+                                        <div class="col-md-6">
+
+                                            <div class="col-md-12 mb-3">
+                                                <label class="required-field">name</label>
+                                                <input type="text" name="name" class="form-control"
+                                                    value="{{ old('name') }}">
+                                            </div>
+                                            <div class="col-md-12 mb-3">
+                                                <label class="required-field">Select Role</label>
+                                                <select name="role" class="form-select" id="role">
+                                                    <option value="">-- Select Role --</option>
+                                                    @foreach (array_column(\App\Helpers\UserRoles::cases(), 'value') as $role)
+                                                        <option value="{{ $role }}"
+                                                            {{ old('role') == $role ? 'selected' : '' }}>
+                                                            {{ $role }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="required-field">Password</label>
-                                            <input type="password" name="password" class="form-control"
-                                                placeholder="••••••••">
+                                        <div class="col-md-6">
+
+                                            <div class="col-md-12 mb-3">
+                                                <label class="required-field">Email Address</label>
+                                                <input type="email" name="email" class="form-control"
+                                                    value="{{ old('email') }}" placeholder="student@example.com">
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="required-field">Password</label>
+                                                    <input type="password" name="password" class="form-control">
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="required-field">Confirm Password</label>
+                                                    <input type="password" name="password_confirmation"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="required-field">Confirm Password</label>
-                                            <input type="password" name="password_confirmation" class="form-control"
-                                                placeholder="••••••••">
-                                        </div>
+                                        <input type="hidden" name="create_new_user" value="1">
                                     </div>
-                                    <input type="hidden" name="create_new_user" value="1">
                                     <small class="form-text text-muted">
                                         A new user account will be created with student role
                                     </small>
@@ -103,12 +128,11 @@
         <div class="row setup-content" id="step-1">
             <div class="col-md-12">
                 <h3 class="step-title"><strong>Admission & Personal Data</strong></h3>
-
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <label class="required-field">Admission Year</label>
-                        <input type="number" name="admission_year" value="{{ old('admission_year', date('Y')) }}"
-                            class="form-control" required min="2000" max="2050">
+                        <input type="number" min="1900" max="2099" name="admission_year"
+                            value="{{ old('admission_year') }}" class="form-control" required>
                     </div>
                     <div class="col-md-3">
                         <label class="required-field">Joining Class</label>
@@ -171,7 +195,7 @@
                     </div>
                     <div class="col-md-3">
                         <label class="required-field">Citizenship (multiple)</label>
-                        <select name="citizenship[]" class="select2-multiple form-select" multiple required>
+                        <select name="citizenship[]" class="form-select" multiple required>
                             @foreach (countries() as $code => $name)
                                 <option value="{{ $code }}" @if (in_array($code, old('citizenship', []))) selected @endif>
                                     {{ $name }}
@@ -196,7 +220,7 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="required-field">Spoken Languages</label>
-                        <select name="spoken_languages[]" class="select2-multiple form-select" multiple required>
+                        <select name="spoken_languages[]" class="form-select" multiple required>
                             @foreach (languages() as $code => $name)
                                 <option value="{{ $code }}" @if (in_array($code, old('spoken_languages', []))) selected @endif>
                                     {{ $name }}
@@ -272,14 +296,14 @@
                                         </div>
                                         <div class="col-md-2">
                                             <label>From Year</label>
-                                            <input type="number"
+                                            <input type="number" min="1900" max="2099"
                                                 name="academic_history[{{ $index }}][from_year]"
                                                 class="form-control" placeholder="From YYYY"
                                                 value="{{ $academic['from_year'] ?? '' }}">
                                         </div>
                                         <div class="col-md-2">
                                             <label>To Year</label>
-                                            <input type="number"
+                                            <input type="number" min="1900" max="2099"
                                                 name="academic_history[{{ $index }}][to_year]"
                                                 class="form-control" placeholder="To YYYY"
                                                 value="{{ $academic['to_year'] ?? '' }}">
@@ -308,6 +332,38 @@
                                                     class="btn btn-sm btn-outline-danger remove-academic">
                                                     <i class="fas fa-times me-1"></i> Remove
                                                 </button>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-4">
+                                            <label>PLE File</label>
+                                            <input type="file"
+                                                name="academic_history[{{ $index }}][ple_file]"
+                                                class="form-control">
+                                            @if (!empty($academic['ple_file']))
+                                                <p class="file-preview">Current:
+                                                    {{ basename($academic['ple_file']) }}</p>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>O-Level File</label>
+                                            <input type="file"
+                                                name="academic_history[{{ $index }}][o_level_file]"
+                                                class="form-control">
+                                            @if (!empty($academic['o_level_file']))
+                                                <p class="file-preview">Current:
+                                                    {{ basename($academic['o_level_file']) }}</p>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Other File</label>
+                                            <input type="file"
+                                                name="academic_history[{{ $index }}][other_file]"
+                                                class="form-control">
+                                            @if (!empty($academic['other_file']))
+                                                <p class="file-preview">Current:
+                                                    {{ basename($academic['other_file']) }}</p>
                                             @endif
                                         </div>
                                     </div>
@@ -441,7 +497,7 @@
 
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label>Career Aspiration</label>
+                        <label class="required-field">Career Aspiration</label>
                         <select name="aspiration" class="form-select">
                             <option value="">-- Select Aspiration --</option>
                             @foreach (array_column(\App\Helpers\CareerAspirations::cases(), 'value') as $c)

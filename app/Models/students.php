@@ -30,7 +30,7 @@ class students extends Model
     ];
 
     protected $casts = [
-        'dob'               => 'date',
+        // 'dob'               => 'date',
         'spoken_languages'  => 'array',
     ];
 

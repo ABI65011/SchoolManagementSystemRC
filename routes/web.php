@@ -24,10 +24,10 @@ Route::middleware('auth', 'auth.session')->group(function () {
         Route::get('/students', 'index')->name('students.index');
         Route::get('/students/create', 'create')->name('students.create');
         Route::post('/students', 'store')->name('students.store');
-        Route::get('/students/{students}', 'show')->name('students.show');
-        Route::get('/students/{students}/edit', 'edit')->name('students.edit');
-        Route::put('/students/{students}', 'update')->name('students.update');
-        Route::delete('/students/{students}', 'destroy')->name('students.destroy');
+        Route::get('/students/{student}', 'show')->name('students.show');
+        Route::get('/students/{student}/edit', 'edit')->name('students.edit');
+        Route::put('/students/{student}', 'update')->name('students.update');
+        Route::delete('/students/{student}', 'destroy')->name('students.destroy');
     });
 
 
