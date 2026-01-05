@@ -253,6 +253,14 @@
                         <small class="form-text text-muted">Accepted formats: JPG, PNG, GIF. Max
                             size: 2MB</small>
                     </div>
+                    <div class="col-md-6">
+                        <label class="required-field">Upload an Identification Image (≤2 MB)</label>
+                        <input type="file" name="identification_image" class="form-control" accept="image/*"
+                            required>
+                        <small class="form-text text-muted">Accepted formats: JPG, PNG, GIF. Max
+                            size: 2MB</small>
+                    </div>
+
                 </div>
 
                 <div class="d-flex justify-content-end">
@@ -336,39 +344,65 @@
                                         </div>
                                     </div>
                                     <div class="row mt-3">
-                                        <div class="col-md-4">
-                                            <label>PLE File</label>
-                                            <input type="file"
-                                                name="academic_history[{{ $index }}][ple_file]"
-                                                class="form-control">
-                                            @if (!empty($academic['ple_file']))
-                                                <p class="file-preview">Current:
-                                                    {{ basename($academic['ple_file']) }}</p>
-                                            @endif
+                                        <div class="col-md-3">
+                                            <label>Repeated class?</label>
+
+                                            <select name="academic_history[{{ $index }}][repeat_class]"
+                                                id="repeat_class" class="form-select">
+                                                <option value="0"
+                                                    {{ old("academic_history.{$index}.repeat_class") == '0' ? 'selected' : '' }}>
+                                                    No</option>
+                                                <option value="1"
+                                                    {{ old("academic_history.{$index}.repeat_class") == '1' ? 'selected' : '' }}>
+                                                    Yes</option>
+                                            </select>
                                         </div>
-                                        <div class="col-md-4">
-                                            <label>O-Level File</label>
-                                            <input type="file"
-                                                name="academic_history[{{ $index }}][o_level_file]"
-                                                class="form-control">
-                                            @if (!empty($academic['o_level_file']))
-                                                <p class="file-preview">Current:
-                                                    {{ basename($academic['o_level_file']) }}</p>
-                                            @endif
+                                        <div class="col-md-3">
+                                            <label>Repeated class</label>
+                                            <input type="text"
+                                                name="academic_history[{{ $index }}][repeated_class]"
+                                                class="form-control" placeholder="eg: S.1"
+                                                value="{{ old("academic_history.{$index}.repeated_class", $academic['repeated_class'] ?? '') }}">
                                         </div>
-                                        <div class="col-md-4">
-                                            <label>Other File</label>
-                                            <input type="file"
-                                                name="academic_history[{{ $index }}][other_file]"
-                                                class="form-control">
-                                            @if (!empty($academic['other_file']))
-                                                <p class="file-preview">Current:
-                                                    {{ basename($academic['other_file']) }}</p>
-                                            @endif
+                                        <div class="col-md-3">
+                                            <label>Skipped class?</label>
+
+                                            <select name="academic_history[{{ $index }}][skip_class]"
+                                                id="skip_class" class="form-select">
+                                                <option value="0"
+                                                    {{ old("academic_history.{$index}.skip_class") == '0' ? 'selected' : '' }}>
+                                                    No</option>
+                                                <option value="1"
+                                                    {{ old("academic_history.{$index}.skip_class") == '1' ? 'selected' : '' }}>
+                                                    Yes</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Skipped class</label>
+                                            <input type="text"
+                                                name="academic_history[{{ $index }}][skipped_class]"
+                                                class="form-control" placeholder="eg: S.1"
+                                                value="{{ old("academic_history.{$index}.skipped_class", $academic['skipped_class'] ?? '') }}">
+                                        </div>
+                                        <div class="row mt-3 file-row">
+                                            <div class="col-md-4 file-group ple-file">
+                                                <label>PLE File</label>
+                                                <input type="file" name="academic_history[0][ple_file]"
+                                                    class="form-control">
+                                            </div>
+                                            <div class="col-md-4 file-group o-level-file">
+                                                <label>O-Level File</label>
+                                                <input type="file" name="academic_history[0][o_level_file]"
+                                                    class="form-control">
+                                            </div>
+                                            <div class="col-md-4 file-group other-file">
+                                                <label>Other File</label>
+                                                <input type="file" name="academic_history[0][other_file]"
+                                                    class="form-control">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                         @endforeach
                     @else
                         <div class="card mb-3 academic-block">
@@ -415,6 +449,24 @@
                                         </button>
                                     </div>
                                 </div>
+                                <div class="row mt-3 file-row">
+                                    <div class="col-md-4 file-group ple-file">
+                                        <label>PLE File</label>
+                                        <input type="file" name="academic_history[0][ple_file]"
+                                            class="form-control">
+                                    </div>
+                                    <div class="col-md-4 file-group o-level-file">
+                                        <label>O-Level File</label>
+                                        <input type="file" name="academic_history[0][o_level_file]"
+                                            class="form-control">
+                                    </div>
+                                    <div class="col-md-4 file-group other-file">
+                                        <label>Other File</label>
+                                        <input type="file" name="academic_history[0][other_file]"
+                                            class="form-control">
+                                    </div>
+                                </div>
+                                
                             </div>
                         </div>
                     @endif
@@ -508,8 +560,8 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label>Best Done Subjects</label>
-                        <select name="best_done_subjects" class="form-select">
+                        <label class="required-field">Best Done Subjects(select more than one)</label>
+                        <select name="best_done_subjects[]" class="form-select" multiple>
                             <option value="">-- Select Subject --</option>
                             @foreach (array_column(\App\Helpers\Subjects::cases(), 'value') as $s)
                                 <option value="{{ $s }}"
@@ -521,6 +573,33 @@
                     </div>
                 </div>
 
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="required-field">Worst Done Subjects</label>
+                        <select name="worst_done_subjects[]" class="form-select" multiple>
+                            <option value="">-- Select Subject --</option>
+                            @foreach (array_column(\App\Helpers\Subjects::cases(), 'value') as $s)
+                                <option value="{{ $s }}"
+                                    {{ old('worst_done_subjects') == $s ? 'selected' : '' }}>
+                                    {{ $s }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="required-field">Favorite Subjects</label>
+                        <select name="favorite_subjects[]" class="form-select" multiple>
+                            <option value="">-- Select Subject --</option>
+                            @foreach (array_column(\App\Helpers\Subjects::cases(), 'value') as $s)
+                                <option value="{{ $s }}"
+                                    {{ old('favorite_subjects') == $s ? 'selected' : '' }}>
+                                    {{ $s }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                </div>
                 <div class="row mb-4">
                     <div class="col-md-12">
                         <label>Additional Information</label>

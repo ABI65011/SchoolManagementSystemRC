@@ -35,7 +35,7 @@ class StudentsController extends Controller
      */
     public function index()
     {
-        $students = students::latest()->with(['user', 'academicHistories', 'disciplineHistory', 'medicalHistory', 'careerAspiration'])->paginate(10);
+        $students = students::with(['user', 'academicHistories', 'disciplineHistory', 'medicalHistory', 'careerAspiration'])->paginate(10);
         return view('students.index', compact('students'));
     }
 
@@ -69,6 +69,7 @@ class StudentsController extends Controller
             //Students validation
             // 'user_id' => 'required|exists:users,id',
             'admission_year' => 'required|integer',
+            'identification_image' => 'required',
             'joining_class' => 'required',
             'first_name' => 'required',
             'middle_name' => 'nullable',
@@ -100,10 +101,10 @@ class StudentsController extends Controller
             'ple_file' => 'nullable|string|max:2048',
             'o_level_file' => 'nullable|string|max:2048',
             'other_file' => 'nullable|string|max:2048',
-            'repeat_class' => 'boolean',
-            'repeated_class' => 'nullable',
-            'skip_class' => 'boolean',
-            'skipped_class' => 'nullable',
+            'academic_history.0.repeat_class' => 'boolean',
+            'academic_history.0.repeated_class' => 'nullable',
+            'academic_history.0.skip_class' => 'boolean',
+            'academic_history.0.skipped_class' => 'nullable',
 
             //Medical History validation
             'has_health_issues' => 'boolean',
@@ -118,12 +119,12 @@ class StudentsController extends Controller
             //Career Aspiration validation
             'aspiration' => 'nullable|in:' . implode(',', array_column(CareerAspirations::cases(), 'value')),
             'other_aspiration' => 'nullable',
-            'best_done_subjects' => 'nullable|in:' . implode(',', array_column(Subjects::cases(), 'value')),
-            'other_best_done_subjects' => 'nullable',
-            'worst_done_subjects' => 'nullable|in:' . implode(',', array_column(Subjects::cases(), 'value')),
-            'other_worst_done_subjects' => 'nullable',
-            'favorite_subjects' => 'nullable|in:' . implode(',', array_column(Subjects::cases(), 'value')),
-            'other_favorite_subjects' => 'nullable',
+            'best_done_subjects' => 'required|array|in:' . implode(',', array_column(Subjects::cases(), 'value')),
+            // 'other_best_done_subjects' => 'nullable',
+            'worst_done_subjects' => 'required|array|in:' . implode(',', array_column(Subjects::cases(), 'value')),
+            // 'other_worst_done_subjects' => 'nullable',
+            'favorite_subjects' => 'required|array|in:' . implode(',', array_column(Subjects::cases(), 'value')),
+            // 'other_favorite_subjects' => 'nullable',
         ]);
 
         if ($validator->fails()) {
@@ -146,7 +147,8 @@ class StudentsController extends Controller
             $validated['user_id'] = $user->id;
             Log::info('ABOUT TO CREATE STUDENT');
 
-            $idPath = $request->file('id_image_path')->store('identity', 'public');
+            $idPath = $request->file('id_image_path') ? $request->file('id_image_path')->store('identity', 'public') : null;
+            $identification_image = $request->file('identification_image') ? $request->file('identification_image')->store('profile', 'public') : null;
 
             $plePath   = $request->hasFile('ple_file')   ? $request->file('ple_file')->store('academicFiles', 'public')   : null;
             $oLevelPath = $request->hasFile('o_level_file') ? $request->file('o_level_file')->store('academicFiles', 'public') : null;
@@ -155,11 +157,15 @@ class StudentsController extends Controller
 
             $validated['citizenship']        = json_encode($validated['citizenship']);
             $validated['spoken_languages']   = json_encode($validated['spoken_languages']);
+            $validated['best_done_subjects']   = json_encode($validated['best_done_subjects']);
+            $validated['worst_done_subjects']   = json_encode($validated['worst_done_subjects']);
+            $validated['favorite_subjects']   = json_encode($validated['favorite_subjects']);
             $validated['additional_info']    = $validated['additional_info'] ?? null;
             // $validated['admission_year'] = Carbon::createFromDate($validated['admission_year'], 1, 1);
 
             $student = students::create([
                 'user_id'               => $validated['user_id'],
+                'identification_image'  => $identification_image ?? null,
                 'admission_year'        => $validated['admission_year'],
                 'joining_class'         => $validated['joining_class'],
                 'first_name'            => $validated['first_name'],
@@ -170,7 +176,7 @@ class StudentsController extends Controller
                 'citizenship'           => $validated['citizenship'],
                 'id_type'               => $validated['id_type'],
                 'id_no'                 => $validated['id_no'],
-                'id_image_path'         => $validated['id_image_path'],
+                'id_image_path'         => $idPath ?? null,
                 'a_level_combination'   => $validated['a_level_combination']   ?? null,
                 'applying_section'      => $validated['applying_section'],
                 'religious_affiliation' => $validated['religious_affiliation'],
@@ -192,6 +198,11 @@ class StudentsController extends Controller
                 'ple_file'        => $plePath  ?? null,
                 'o_level_file'    => $oLevelPath ?? null,
                 'other_file'      => $otherPath  ?? null,
+                'repeat_class'    => $academic['repeat_class'],
+                'repeated_class'  => $academic['repeated_class'],
+                'skip_class'     => $academic['skip_class'],
+                'skipped_class'  => $academic['skipped_class'],
+
             ]);
             MedicalHistory::create([
                 'students_id'        => $student->id,
@@ -201,7 +212,7 @@ class StudentsController extends Controller
             ]);
             DisciplineHistory::create([
                 'students_id'            => $student->id,
-                'has_disciplinary_issues' => 1,
+                'has_disciplinary_issues' => $validated['has_disciplinary_issues'] ?? 0,
                 'disciplinary_issues'   => $validated['disciplinary_issues'],
                 'reason'                => $validated['reason'],
             ]);
@@ -209,11 +220,11 @@ class StudentsController extends Controller
                 'students_id'         => $student->id,
                 'aspiration'         => $validated['aspiration']         ?? null,
                 'best_done_subjects' => $validated['best_done_subjects'] ?? null,
-                'other_best_done_subjects' => $validated['other_best_done_subjects'] ?? null,
+                // 'other_best_done_subjects' => $validated['other_best_done_subjects'] ?? null,
                 'worst_done_subjects' => $validated['worst_done_subjects'] ?? null,
-                'other_worst_done_subjects' => $validated['other_worst_done_subjects'] ?? null,
+                // 'other_worst_done_subjects' => $validated['other_worst_done_subjects'] ?? null,
                 'favorite_subjects' => $validated['favorite_subjects'] ?? null,
-                'other_favorite_subjects' => $validated['other_favorite_subjects'] ?? null,
+                // 'other_favorite_subjects' => $validated['other_favorite_subjects'] ?? null,
             ]);
 
             DB::commit();
@@ -226,12 +237,13 @@ class StudentsController extends Controller
                 ->with('success', 'Student created successfully.');
         } catch (\Throwable $th) {
             Log::error('EXCEPTION INSIDE TRY', ['msg' => $th->getMessage(), 'trace' => $th->getTraceAsString()]);
-            return back()->with('error', 'An error occurred while creating the student: ' . $th->getMessage())->withInput();
             DB::rollBack();
+            // return back()->with('error', 'An error occurred while creating the student: ' . $th->getMessage())->withInput();
 
 
             $toDelete = array_filter([
                 $validated['id_image_path'] ?? null,
+                $validated['identification_image'] ?? null,
                 $validated['ple_file']          ?? null,
                 $validated['o_level_file']      ?? null,
                 $validated['other_file']        ?? null,
@@ -247,9 +259,17 @@ class StudentsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(students $students)
+    public function show(students $student)
     {
-        return view('students.show', compact('students'));
+        $users = User::whereHas('student')->get();
+        $student->load([
+            'academicHistories',
+            'medicalHistory',
+            'disciplineHistory',
+            'careerAspiration',
+            'user'
+        ]);
+        return view('profile_management.index', compact('student'));
     }
 
     /**
@@ -286,6 +306,7 @@ class StudentsController extends Controller
 
             // STUDENT
             'user_id' => 'required|exists:users,id',
+            'identification_image' => 'required',
             'admission_year' => 'required',
             'joining_class' => 'required',
             'first_name' => 'required',
@@ -317,6 +338,11 @@ class StudentsController extends Controller
             'o_level_file' => 'nullable|file|max:2048',
             'other_file' => 'nullable|file|max:2048',
 
+            'academic_history.0.repeat_class' => 'boolean',
+            'academic_history.0.repeated_class' => 'nullable',
+            'academic_history.0.skip_class' => 'boolean',
+            'academic_history.0.skipped_class' => 'nullable',
+
             //MEDICAL
             'has_health_issues' => 'boolean',
             'health_issues' => 'nullable',
@@ -329,11 +355,11 @@ class StudentsController extends Controller
 
             //CAREER
             'aspiration' => 'nullable|in:' . implode(',', array_column(CareerAspirations::cases(), 'value')),
-            'best_done_subjects' => 'nullable|in:' . implode(',', array_column(Subjects::cases(), 'value')),
+            'best_done_subjects' => 'required|array|in:' . implode(',', array_column(Subjects::cases(), 'value')),
             'other_best_done_subjects' => 'nullable',
-            'worst_done_subjects' => 'nullable|in:' . implode(',', array_column(Subjects::cases(), 'value')),
+            'worst_done_subjects' => 'required|array|in:' . implode(',', array_column(Subjects::cases(), 'value')),
             'other_worst_done_subjects' => 'nullable',
-            'favorite_subjects' => 'nullable|in:' . implode(',', array_column(Subjects::cases(), 'value')),
+            'favorite_subjects' => 'required|array|in:' . implode(',', array_column(Subjects::cases(), 'value')),
             'other_favorite_subjects' => 'nullable',
         ]);
 
@@ -362,6 +388,10 @@ class StudentsController extends Controller
                 Storage::delete($student->id_image_path);
                 $validated['id_image_path'] = $request->file('id_image_path')->store('identity', 'public');
             }
+            if ($request->hasFile('identification_image')) {
+                Storage::delete($student->identification_image);
+                $validated['identification_image'] = $request->file('identification_image')->store('profile', 'public');
+            }
 
             $plePath = $request->hasFile('ple_file')
                 ? $request->file('ple_file')->store('academicFiles', 'public')
@@ -382,6 +412,7 @@ class StudentsController extends Controller
             // STUDENT UPDATE
             $student->update([
                 'user_id' => $validated['user_id'],
+                'identification_image' => $validated['identification_image'],
                 'admission_year' => $validated['admission_year'],
                 'joining_class' => $validated['joining_class'],
                 'first_name' => $validated['first_name'],
@@ -414,6 +445,10 @@ class StudentsController extends Controller
                 'ple_file' => $plePath ?? $academic->ple_file,
                 'o_level_file' => $oLevelPath ?? $academic->o_level_file,
                 'other_file' => $otherPath ?? $academic->other_file,
+                'repeat_class'    => $row['repeat_class'],
+                'repeated_class'  => $row['repeated_class'],
+                'skip_class'     => $row['skip_class'],
+                'skipped_class'  => $row['skipped_class'],
             ]);
 
             // MEDICAL UPDATE
@@ -433,12 +468,13 @@ class StudentsController extends Controller
             // CAREER UPDATE
             $student->careerAspiration()->update([
                 'aspiration' => $validated['aspiration'] ?? null,
+
                 'best_done_subjects' => $validated['best_done_subjects'] ?? null,
-                'other_best_done_subjects' => $validated['other_best_done_subjects'] ?? null,
+                // 'other_best_done_subjects' => $validated['other_best_done_subjects'] ?? null,
                 'worst_done_subjects' => $validated['worst_done_subjects'] ?? null,
-                'other_worst_done_subjects' => $validated['other_worst_done_subjects'] ?? null,
+                // 'other_worst_done_subjects' => $validated['other_worst_done_subjects'] ?? null,
                 'favorite_subjects' => $validated['favorite_subjects'] ?? null,
-                'other_favorite_subjects' => $validated['other_favorite_subjects'] ?? null,
+                // 'other_favorite_subjects' => $validated['other_favorite_subjects'] ?? null,
             ]);
 
             DB::commit();

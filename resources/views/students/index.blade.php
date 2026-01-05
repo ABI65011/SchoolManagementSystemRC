@@ -21,7 +21,7 @@
                     <tbody>
                         @foreach ($students as $s)
                             <tr>
-                                <td>{{ $s->id }}</td>
+                                <td>{{ $loop->index + 1 }}</td>
                                 <td>{{ $s->first_name . ' ' . $s->last_name }}</td>
                                 <td>{{ $s->dob }}</td>
                                 <td>{{ $s->gender }}</td>

@@ -18,13 +18,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(students::class)->constrained()->onDelete('cascade');
             $table->enum('aspiration', array_column(CareerAspirations::cases(), 'value'))->nullable();
-            $table->string('other_aspiration')->nullable();
-            $table->enum('best_done_subjects', array_column(Subjects::cases(), 'value'))->nullable();
-            $table->string('other_best_done_subjects')->nullable();
-            $table->enum('worst_done_subjects', array_column(Subjects::cases(), 'value'))->nullable();
-            $table->string('other_worst_done_subjects')->nullable();
-            $table->enum('favorite_subjects', array_column(Subjects::cases(), 'value'))->nullable();
-            $table->string('other_favorite_subjects')->nullable();
+            $table->json('best_done_subjects')->nullable();
+            $table->json('worst_done_subjects')->nullable();
+            $table->json('favorite_subjects')->nullable();
             $table->timestamps();
         });
     }

@@ -17,6 +17,7 @@
 
     <!-- Select2 - Load only ONE version -->
     <script src="{{ asset('js/select2.full.min.js') }}"></script>
+    <script src="https://kit.fontawesome.com/b0ddfd4740.js" crossorigin="anonymous"></script>
 
 
 </head>

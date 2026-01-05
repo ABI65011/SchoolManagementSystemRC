@@ -347,15 +347,13 @@
                             );
                             isValid = false;
                         }
-                    }
-                    else if (isSelect && !value) {
+                    } else if (isSelect && !value) {
                         field.closest('.mb-3').addClass('has-error');
                         field.after(
                             '<div class="error-text text-danger small mt-1">This field is required</div>'
                         );
                         isValid = false;
-                    }
-                    else if (fieldType === 'file') {
+                    } else if (fieldType === 'file') {
                         if (field[0].files.length === 0) {
                             field.closest('.mb-3').addClass('has-error');
                             field.after(
@@ -373,8 +371,7 @@
                                 isValid = false;
                             }
                         }
-                    }
-                    else if (!value && value !== 0) {
+                    } else if (!value && value !== 0) {
                         field.closest('.mb-3').addClass('has-error');
                         field.after(
                             '<div class="error-text text-danger small mt-1">This field is required</div>'
@@ -498,5 +495,27 @@
 
             $('input[name="user_option"]:checked').trigger('change');
         });*/
+        /* ---------- show/hide PLE / O-Level / Other file inputs per row ---------- */
+        $(document).on('change', 'select[name$="[academic_level]"]', function() {
+            const $fileRow = $row.find('.file-row'); // one element per card-body
+            $fileRow.hide().find('input').prop('required', false);
+
+            switch (level) {
+                case 'PLE':
+                    $fileRow.show().find('.ple-file input').prop('required', true);
+                    break;
+                case 'UCE':
+                    $fileRow.show().find('.o-level-file input').prop('required', true);
+                    break;
+                case 'UACE':
+                    $fileRow.show().find('.o-level-file input, .other-file input').prop('required', true);
+                    break;
+                default: // Other
+                    $fileRow.show().find('.other-file input').prop('required', true);
+            }
+        });
+
+        /* trigger once on page load for any pre-filled rows */
+        $('select[name$="[academic_level]"]').trigger('change');
     </script>
 @endsection
