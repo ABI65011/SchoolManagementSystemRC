@@ -2,6 +2,7 @@
 <html lang="en">
 <!--begin::Head-->
 
+{{-- Extra line here😌 --}}
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>{{ config('app.name') }} | @yield('title', 'App')</title>
