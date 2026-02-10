@@ -5,235 +5,9 @@
 @section('title', 'Register Student')
 {{-- @section('plugins.Select2', true) AdminLTE plugin flag --}}
 @section('header')
-    <style>
-        body {
-            background-color: var(--bs-body-bg);
-            color: var(--bs-body-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
 
-        .card {
-            box-shadow: 0 0 1px rgba(0, 0, 0, .125), 0 1px 3px rgba(0, 0, 0, .2);
-            margin-bottom: 1rem;
-            border-radius: 0.5rem;
 
-            background-color: var(--bs-card-bg, var(--bs-body-bg));
-            border: 1px solid var(--bs-border-color, rgba(0, 0, 0, .125));
-        }
-        }
-
-        .card-header {
-            color: white;
-            border-radius: 0.5rem 0.5rem 0 0 !important;
-        }
-
-        .steps-form {
-            display: table;
-            width: 100%;
-            position: relative;
-            margin-bottom: 2rem;
-        }
-
-        .steps-form .steps-row {
-            display: table-row;
-        }
-
-        .steps-form .steps-row:before {
-            top: 14px;
-            bottom: 0;
-            position: absolute;
-            content: " ";
-            width: 100%;
-            height: 2px;
-            background-color: #e0e0e0;
-            z-index: 0;
-        }
-
-        .steps-form .steps-row .steps-step {
-            display: table-cell;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .steps-form .steps-row .steps-step p {
-            margin-top: 0.5rem;
-            font-weight: 500;
-            color: #6c757d;
-        }
-
-        .steps-form .steps-row .steps-step button[disabled] {
-            opacity: 1 !important;
-            filter: alpha(opacity=100) !important;
-        }
-
-        .steps-form .steps-row .steps-step .btn-circle {
-            width: 40px;
-            height: 40px;
-            text-align: center;
-            padding: 6px 0;
-            font-size: 14px;
-            font-weight: bold;
-            line-height: 1.428571429;
-            border-radius: 50%;
-            margin-top: 0;
-            border: 3px solid #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-        }
-
-        .btn-indigo {
-            background-color: #6610f2;
-            border-color: #6610f2;
-            color: white;
-        }
-
-        .btn-indigo:hover {
-            background-color: #5a0cd8;
-            border-color: #5a0cd8;
-            color: white;
-        }
-
-        .setup-content {
-            padding: 20px;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .form-control,
-        .form-select {
-            border-radius: 0.375rem;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid var(--bs-border-color);
-            background-color: var(--bs-body-bg);
-            color: var(--bs-body-color);
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-
-        label {
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .required-field::after {
-            content: " *";
-            color: #dc3545;
-        }
-
-        .academic-block {
-            border-left: 4px solid #007bff;
-        }
-
-        .footer {
-            margin-top: 2rem;
-            padding: 1rem 0;
-            text-align: center;
-            color: #6c757d;
-            border-top: 1px solid #dee2e6;
-        }
-
-        .has-error .form-control,
-        .has-error .form-select {
-            border-color: #dc3545;
-        }
-
-        .has-error .error-text {
-            color: #dc3545;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-
-        .step-title {
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
-            margin-bottom: 25px;
-            font-weight: 700;
-        }
-
-        .has-error .form-control,
-        .has-error .form-select,
-        .has-error .select2-selection {
-            border-color: #dc3545 !important;
-            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
-        }
-
-        .error-text {
-            color: #dc3545;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            display: block;
-        }
-
-        .steps-step button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .steps-step button.btn-indigo {
-            background-color: #6610f2;
-            border-color: #6610f2;
-        }
-
-        .steps-step button.btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
-        }
-
-        .btn-indigo {
-            background-color: #6610f2;
-            border-color: #6610f2;
-            color: white;
-        }
-
-        .btn-indigo:hover {
-            background-color: #5a0cd8;
-            border-color: #5a0cd8;
-        }
-
-        .setup-content {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .is-invalid {
-            border-color: #dc3545 !important;
-        }
-
-        .is-invalid:focus {
-            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
-        }
-
-        .current-id-image {
-            max-width: 200px;
-            max-height: 150px;
-            margin-top: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 5px;
-        }
-
-        .file-preview {
-            margin-top: 5px;
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-    </style>
-
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/mdb.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
@@ -261,261 +35,382 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+     <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('js/mdb.min.js') }}"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
-        $(document).ready(function() {
+    $(document).ready(function() {
 
-            if (typeof $.fn.select2 !== 'undefined') {
-                $('.select2-multiple').select2({
-                    placeholder: 'Select options',
-                    width: '100%'
-                });
+        // Initialize Select2
+        if (typeof $.fn.select2 !== 'undefined') {
+            $('.select2-multiple').select2({
+                placeholder: 'Select options',
+                width: '100%'
+            });
+        }
+
+        // Stepper state
+        var currentStep = 1;
+        var totalSteps = 4;
+
+        // Auto-generate name from first name and last nameand middle name if available
+        function updateAutoName() {
+            var firstName = $('#first_name').val().trim();
+            var lastName = $('#last_name').val().trim();
+            var middleName = $('#middle_name').val().trim();
+
+            var fullName = '';
+            if (firstName) fullName += firstName;
+            if (lastName) {
+                if (fullName) fullName += ' ';
+                fullName += lastName;
+            }
+            if (middleName) {
+                if (fullName) fullName += ' ';
+                fullName += middleName;
             }
 
-            var currentStep = 1;
-            var totalSteps = 3;
+            // Update hidden input and preview
+            $('#auto_name').val(fullName);
+            $('#preview_name').val(fullName || ' ');
+        }
+        $('#first_name, #last_name, #middle_name').on('input blur', updateAutoName);
+
+        // Initialize on page load
+        updateAutoName();
 
 
-            function showStep(stepNumber) {
+        function showStep(stepNumber) {
+            $('.setup-content').hide();
+            $('#step-' + stepNumber).show();
 
-                $('.setup-content').hide();
+            $('.steps-step button').removeClass('btn-indigo').addClass('btn-secondary');
+            $('.steps-step button[data-step="step-' + stepNumber + '"]').removeClass('btn-secondary').addClass('btn-indigo');
 
-                $('#step-' + stepNumber).show();
-
-
-                $('.steps-step button').removeClass('btn-indigo').addClass('btn-secondary');
-                $('.steps-step button[data-step="step-' + stepNumber + '"]').removeClass('btn-secondary').addClass(
-                    'btn-indigo');
+            currentStep = stepNumber;
+        }
 
 
-                currentStep = stepNumber;
+        showStep(1);
+
+
+        $('.steps-step button').click(function() {
+            if (!$(this).is(':disabled')) {
+                var step = $(this).data('step');
+                var stepNumber = parseInt(step.split('-')[1]);
+                showStep(stepNumber);
+            }
+        });
+
+        $('.nextBtn').click(function() {
+            if (validateStep(currentStep)) {
+                if (currentStep < totalSteps) {
+                    showStep(currentStep + 1);
+                }
+            }
+        });
+
+
+        $('.prevBtn').click(function() {
+            if (currentStep > 1) {
+                showStep(currentStep - 1);
+            }
+        });
+
+
+        function validateStep(stepNumber) {
+            var isValid = true;
+            var stepElement = $('#step-' + stepNumber);
+
+            if (stepElement.length === 0) return true;
+
+            // Clear previous errors
+            stepElement.find('.has-error').removeClass('has-error');
+            stepElement.find('.error-text').remove();
+
+            // Validate required text inputs, selects, and textareas (NOT files)
+            stepElement.find('input[required], select[required], textarea[required]').each(function() {
+                var field = $(this);
+                var value = field.val();
+                var isSelect2 = field.hasClass('select2-multiple');
+
+                if (field.attr('type') === 'file') return true;
+
+                var hasValue = isSelect2
+                    ? (field.select2('data') && field.select2('data').length > 0)
+                    : (value && value.toString().trim() !== '');
+
+                if (!hasValue) {
+                    markFieldError(field, 'This field is required');
+                    isValid = false;
+                }
+            });
+
+            stepElement.find('input[type="file"][required]').each(function() {
+                var field = $(this);
+                if (field[0].files.length === 0) {
+                    markFieldError(field, 'Please upload a file');
+                    isValid = false;
+                } else if (field[0].files[0].size > 2 * 1024 * 1024) {
+                    markFieldError(field, 'File size must be less than 2MB');
+                    isValid = false;
+                }
+            });
+
+
+            if (stepNumber === 1) {
+                var emailField = stepElement.find('input[name="email"]');
+                var emailValue = emailField.val().trim();
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (emailValue && !emailRegex.test(emailValue)) {
+                    markFieldError(emailField, 'Please enter a valid email address');
+                    isValid = false;
+                }
+
+                // Ensure name is generated
+                if (!$('#auto_name').val().trim()) {
+                    markFieldError($('#first_name'), 'Please fill in First Name');
+                    markFieldError($('#last_name'), 'Please fill in Last Name');
+                    isValid = false;
+                }
             }
 
-
-            showStep(1);
-
-
-            $('.steps-step button').click(function() {
-                if (!$(this).is(':disabled')) {
-                    var step = $(this).data('step');
-                    var stepNumber = parseInt(step.split('-')[1]);
-                    showStep(stepNumber);
-                }
-            });
-
-
-            $('.nextBtn').click(function() {
-
-                if (validateStep(currentStep)) {
-                    if (currentStep < totalSteps) {
-                        showStep(currentStep + 1);
-                    }
-                }
-            });
-
-
-            $('.prevBtn').click(function() {
-                if (currentStep > 1) {
-                    showStep(currentStep - 1);
-                }
-            });
-
-            function validateStep(stepNumber) {
-                var isValid = true;
-                var stepElement = $('#step-' + stepNumber);
-
-                stepElement.find('.has-error').removeClass('has-error');
-                stepElement.find('.error-text').remove();
-
-                stepElement.find('[required]').each(function() {
-                    var field = $(this);
-                    var value = field.val();
-                    var fieldType = field.attr('type');
-                    var isSelect = field.is('select');
-                    var isSelect2 = field.hasClass('select2-multiple');
-
-                    if (isSelect2) {
-                        var select2Data = field.select2('data');
-                        if (select2Data.length === 0) {
-                            field.closest('.mb-3').addClass('has-error');
-                            field.after(
-                                '<div class="error-text text-danger small mt-1">This field is required</div>'
-                            );
-                            isValid = false;
-                        }
-                    } else if (isSelect && !value) {
-                        field.closest('.mb-3').addClass('has-error');
-                        field.after(
-                            '<div class="error-text text-danger small mt-1">This field is required</div>'
-                        );
-                        isValid = false;
-                    } else if (fieldType === 'file') {
-                        if (field[0].files.length === 0) {
-                            field.closest('.mb-3').addClass('has-error');
-                            field.after(
-                                '<div class="error-text text-danger small mt-1">Please upload a file</div>'
-                            );
-                            isValid = false;
-                        } else {
-
-                            var file = field[0].files[0];
-                            if (file.size > 2 * 1024 * 1024) {
-                                field.closest('.mb-3').addClass('has-error');
-                                field.after(
-                                    '<div class="error-text text-danger small mt-1">File size must be less than 2MB</div>'
-                                );
-                                isValid = false;
-                            }
-                        }
-                    } else if (!value && value !== 0) {
-                        field.closest('.mb-3').addClass('has-error');
-                        field.after(
-                            '<div class="error-text text-danger small mt-1">This field is required</div>'
-                        );
-                        isValid = false;
-                    }
-                });
-
-                if (!isValid) {
+            // Scroll to first error
+            if (!isValid) {
+                var $firstError = stepElement.find('.has-error').first();
+                if ($firstError.length && $firstError.offset()) {
                     $('html, body').animate({
-                        scrollTop: stepElement.find('.has-error').first().offset().top - 100
+                        scrollTop: $firstError.offset().top - 100
                     }, 500);
                 }
-
-                return isValid;
             }
 
-            $('#has_health_issues').change(function() {
-                const show = $(this).val() === '1';
-                $('#health-details').toggle(show);
-            });
+            return isValid;
+        }
 
-            $('#has_disciplinary_issues').change(function() {
-                const show = $(this).val() === '1';
-                $('#discipline-details').toggle(show);
-            });
+        function markFieldError(field, message) {
+            var container = field.closest('.mb-3, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-6, .col-md-12, .form-group');
+            container.addClass('has-error');
+            if (field.siblings('.error-text').length === 0) {
+                field.after('<div class="error-text text-danger small mt-1">' + message + '</div>');
+            }
+        }
 
-            let academicIndex =
-                {{ count(old('academic_history', [])) > 0 ? count(old('academic_history', [])) : 1 }};
 
-            $('#add-academic').click(function() {
-                const html = `
-                <div class="card mb-3 academic-block">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <label>Academic Level</label>
-                                <select name="academic_history[${academicIndex}][academic_level]" class="form-select">
-                                    <option value="">-- Select --</option>
-                                    @foreach (array_column(\App\Helpers\AcademicLevel::cases(), 'value') as $lvl)
-                                        <option value="{{ $lvl }}">{{ $lvl }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label>School Name</label>
-                                <input type="text" name="academic_history[${academicIndex}][school_name]" class="form-control" placeholder="School">
-                            </div>
-                            <div class="col-md-2">
-                                <label>From Year</label>
-                                <input type="number" name="academic_history[${academicIndex}][from_year]" class="form-control" placeholder="From YYYY" min="1900" max="{{ date('Y') }}">
-                            </div>
-                            <div class="col-md-2">
-                                <label>To Year</label>
-                                <input type="number" name="academic_history[${academicIndex}][to_year]" class="form-control" placeholder="To YYYY" min="1900" max="{{ date('Y') }}">
-                            </div>
-                            <div class="col-md-1">
-                                <label>Aggregate Score</label>
-                                <input type="text" name="academic_history[${academicIndex}][aggregate_score]" class="form-control" placeholder="Agg">
-                            </div>
-                            <div class="col-md-1">
-                                <label>Grade</label>
-                                <input type="text" name="academic_history[${academicIndex}][grade]" class="form-control" placeholder="Grade">
-                            </div>
-                            <div class="col-md-2 align-self-end">
-                                <button type="button" class="btn btn-sm btn-outline-danger remove-academic">
-                                    <i class="fas fa-times me-1"></i> Remove
-                                </button>
-                            </div>
+        $('#has_health_issues').change(function() {
+            $('#health-details').toggle($(this).val() === '1');
+        });
+
+
+        $('#has_disciplinary_issues').change(function() {
+            $('#discipline-details').toggle($(this).val() === '1');
+        });
+
+
+        let academicIndex = {{ count(old('academic_history', [])) > 0 ? count(old('academic_history', [])) : 1 }};
+
+
+        $(document).on('click', '#add-academic', function() {
+
+            $(this).removeAttr('id');
+            $(this).removeClass('btn-outline-primary').addClass('btn-outline-danger remove-academic');
+            $(this).html('<i class="fas fa-times me-1"></i> Remove');
+
+            const html = `
+            <div class="card mb-3 academic-block">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label class="required-field">Academic Level</label>
+                            <select name="academic_history[${academicIndex}][academic_level]" class="form-select academic-level-select" required>
+                                <option value="">-- Select --</option>
+                                @foreach (array_column(\App\Helpers\AcademicLevel::cases(), 'value') as $lvl)
+                                    <option value="{{ $lvl }}">{{ $lvl }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="required-field">School Name</label>
+                            <input type="text" name="academic_history[${academicIndex}][school_name]" class="form-control" placeholder="School" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="required-field">From Year</label>
+                            <input type="number" name="academic_history[${academicIndex}][from_year]" class="form-control" placeholder="From YYYY" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="required-field">To Year</label>
+                            <input type="number" name="academic_history[${academicIndex}][to_year]" class="form-control" placeholder="To YYYY" required>
+                        </div>
+                        <div class="col-md-1">
+                            <label class="required-field">Agg Score</label>
+                            <input type="text" name="academic_history[${academicIndex}][aggregate_score]" class="form-control" placeholder="Agg" required>
+                        </div>
+                        <div class="col-md-1">
+                            <label>Grade</label>
+                            <input type="text" name="academic_history[${academicIndex}][grade]" class="form-control" placeholder="Grade">
+                        </div>
+                        <div class="col-md-2 align-self-end">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="add-academic">
+                                <i class="fas fa-plus me-1"></i> Add More
+                            </button>
                         </div>
                     </div>
-                </div>`;
-                $('#academic-history-wrapper').append(html);
-                academicIndex++;
-            });
 
-            $(document).on('click', '.remove-academic', function() {
-                $(this).closest('.academic-block').remove();
-            });
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label>Repeated class?</label>
+                            <select name="academic_history[${academicIndex}][repeat_class]" class="form-select repeat-toggle">
+                                <option value="0" selected>No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 repeated-class-field" style="display:none;">
+                            <label>Repeated class</label>
+                            <input type="text" name="academic_history[${academicIndex}][repeated_class]" class="form-control" placeholder="eg: S.1">
+                        </div>
+                        <div class="col-md-3">
+                            <label>Skipped class?</label>
+                            <select name="academic_history[${academicIndex}][skip_class]" class="form-select skip-toggle">
+                                <option value="0" selected>No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 skipped-class-field" style="display:none;">
+                            <label>Skipped class</label>
+                            <input type="text" name="academic_history[${academicIndex}][skipped_class]" class="form-control" placeholder="eg: S.1">
+                        </div>
+                    </div>
 
-            $('#studentForm').on('submit', function(e) {
-                e.preventDefault();
+                    <div class="row mt-3 file-row">
+                        <div class="col-md-4 file-group ple-file" style="display:none;">
+                            <label>PLE File</label>
+                            <input type="file" name="academic_history[${academicIndex}][ple_file]" class="form-control">
+                        </div>
+                        <div class="col-md-4 file-group o-level-file" style="display:none;">
+                            <label>O-Level File</label>
+                            <input type="file" name="academic_history[${academicIndex}][o_level_file]" class="form-control">
+                        </div>
+                        <div class="col-md-4 file-group other-file" style="display:none;">
+                            <label>Other File</label>
+                            <input type="file" name="academic_history[${academicIndex}][other_file]" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>`;
 
-                let firstInvalid = null;
-                for (let i = 1; i <= totalSteps; i++) {
-                    if (!validateStep(i) && firstInvalid === null) {
-                        firstInvalid = i;
-                    }
-                }
-
-
-                if (firstInvalid !== null) {
-                    showStep(firstInvalid);
-                    $('html,body').animate({
-                        scrollTop: $('.steps-form').offset().top - 50
-                    }, 500);
-                    return;
-                }
-
-
-                this.submit();
-            });
-
+            $('#academic-history-wrapper').append(html);
+            academicIndex++;
         });
-        /*$(document).ready(function() {
-
-            $('input[name="user_option"]').change(function() {
-                if ($(this).val() === 'existing') {
-                    $('#existing-user-section').show();
-                    $('#new-user-section').hide();
-                    $('#new-user-section input').prop('required', false);
-                    $('#existing-user-section select').prop('required', true);
-                } else {
-                    $('#existing-user-section').hide();
-                    $('#new-user-section').show();
-                    $('#existing-user-section select').prop('required', false);
-                    $('#new-user-section input').prop('required', true);
-                }
-            });
 
 
-            $('input[name="user_option"]:checked').trigger('change');
-        });*/
-        /* ---------- show/hide PLE / O-Level / Other file inputs per row ---------- */
-        $(document).on('change', 'select[name$="[academic_level]"]', function() {
-            const $fileRow = $row.find('.file-row'); // one element per card-body
-            $fileRow.hide().find('input').prop('required', false);
+        $(document).on('click', '.remove-academic', function() {
+            var $block = $(this).closest('.academic-block');
 
-            switch (level) {
-                case 'PLE':
-                    $fileRow.show().find('.ple-file input').prop('required', true);
-                    break;
-                case 'UCE':
-                    $fileRow.show().find('.o-level-file input').prop('required', true);
-                    break;
-                case 'UACE':
-                    $fileRow.show().find('.o-level-file input, .other-file input').prop('required', true);
-                    break;
-                default: // Other
-                    $fileRow.show().find('.other-file input').prop('required', true);
+
+            if ($('.academic-block').length === 1) {
+                $block.find('input, select').val('');
+                $block.find('.file-row .file-group').hide();
+            } else {
+                $block.remove();
+            }
+
+
+            if ($('#add-academic').length === 0) {
+                $('.academic-block').first().find('.remove-academic')
+                    .removeClass('btn-outline-danger remove-academic')
+                    .addClass('btn-outline-primary')
+                    .attr('id', 'add-academic')
+                    .html('<i class="fas fa-plus me-1"></i> Add More');
             }
         });
 
-        /* trigger once on page load for any pre-filled rows */
-        $('select[name$="[academic_level]"]').trigger('change');
+
+        $(document).on('change', '.academic-level-select', function() {
+            var $block = $(this).closest('.academic-block');
+            var level = $(this).val();
+
+
+            $block.find('.file-group').hide().find('input').prop('required', false);
+
+            if (level) {
+                switch(level) {
+                    case 'PLE':
+                        $block.find('.ple-file').show();
+                        break;
+                    case 'O Level':
+                        $block.find('.o-level-file').show();
+                        break;
+                    case 'A Level':
+                        $block.find('.o-level-file, .other-file').show();
+                        break;
+                    default:
+                        $block.find('.other-file').show();
+                }
+            }
+        });
+
+
+        $(document).on('change', '.repeat-toggle', function() {
+            var $block = $(this).closest('.academic-block');
+            var show = $(this).val() === '1';
+            $block.find('.repeated-class-field').toggle(show);
+            $block.find('.repeated-class-field input').prop('required', show);
+        });
+
+
+        $(document).on('change', '.skip-toggle', function() {
+            var $block = $(this).closest('.academic-block');
+            var show = $(this).val() === '1';
+            $block.find('.skipped-class-field').toggle(show);
+            $block.find('.skipped-class-field input').prop('required', show);
+        });
+
+
+        $('#studentForm').on('submit', function(e) {
+            e.preventDefault();
+
+            // Validate all steps
+            let firstInvalid = null;
+            for (let i = 1; i <= totalSteps; i++) {
+                if (!validateStep(i) && firstInvalid === null) {
+                    firstInvalid = i;
+                }
+            }
+
+            if (firstInvalid !== null) {
+                showStep(firstInvalid);
+                var $errorElement = $('#step-' + firstInvalid).find('.has-error').first();
+                if ($errorElement.length && $errorElement.offset()) {
+                    $('html, body').animate({
+                        scrollTop: $errorElement.offset().top - 100
+                    }, 500);
+                }
+                return false;
+            }
+
+            this.submit();
+        });
+
+
+        $('.academic-block').each(function() {
+            var $block = $(this);
+            var level = $block.find('.academic-level-select').val();
+
+            if (level) {
+                $block.find('.academic-level-select').trigger('change');
+            }
+
+            if ($block.find('.repeat-toggle').val() === '1') {
+                $block.find('.repeated-class-field').show();
+            }
+            if ($block.find('.skip-toggle').val() === '1') {
+                $block.find('.skipped-class-field').show();
+            }
+        });
+
+    });
     </script>
 @endsection

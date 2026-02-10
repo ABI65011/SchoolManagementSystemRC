@@ -7,172 +7,88 @@
                 <button type="button" class="btn btn-indigo btn-circle" data-step="step-1">
                     1
                 </button>
-                <p>Admission & Personal Data</p>
+                <p>Personal Information</p>
             </div>
             <div class="steps-step">
                 <button type="button" class="btn btn-secondary btn-circle" disabled data-step="step-2">
                     2
                 </button>
-                <p>Academic History</p>
+                <p>Admission & Identification</p>
             </div>
             <div class="steps-step">
                 <button type="button" class="btn btn-secondary btn-circle" disabled data-step="step-3">
                     3
                 </button>
-                <p>Medical, Discipline, Career, Misc </p>
+                <p>Academic History</p>
+            </div>
+            <div class="steps-step">
+                <button type="button" class="btn btn-secondary btn-circle" disabled data-step="step-4">
+                    4
+                </button>
+                <p>Health, Discipline & Career</p>
             </div>
         </div>
     </div>
-    <form role="form" action="{{ route('students.store') }}" method="POST" enctype="multipart/form-data"
-        id="studentForm">
+
+    @php
+        $isEdit = isset($student) && $student;
+        $formAction = $isEdit ? route('students.update', $student->id) : route('students.store');
+        $formMethod = $isEdit ? 'PUT' : 'POST';
+    @endphp
+
+    <form role="form" action="{{ $formAction }}" method="POST" enctype="multipart/form-data" id="studentForm">
         @csrf
+        @if ($isEdit)
+            @method('PUT')
+        @else
+            <!-- Hidden fields for user account creation -->
+            <input type="hidden" name="role" value="{{ \App\Helpers\UserRoles::Student->value }}">
+            <input type="hidden" name="password" value="password">
+            <input type="hidden" name="password_confirmation" value="password">
+            <input type="hidden" name="name" id="auto_name" value="{{ old('name') }}">
+        @endif
 
-        <!-- ===== STEP 1 – Core bio / admission ================================== -->
-        <div class="row mb-4">
-            <div class="col-md-12">
-                <div class="card card-success">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">User Account</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            {{-- <div class="col-md-6">
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="radio" name="user_option" id="existing_user"
-                                        value="existing" checked>
-                                    <label class="form-check-label" for="existing_user">
-                                        Use Existing User Account
-                                    </label>
-                                </div>
-
-                                <div id="existing-user-section">
-                                    <label class="required-field">Select User</label>
-                                    <select name="user_id" class="form-select" id="user_id">
-                                        <option value="">-- Select User --</option>
-                                        @foreach ($users as $user)
-                                            <option value="{{ $user->id }}"
-                                                {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                                {{ $user->name }} ({{ $user->email }})
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <small class="form-text text-muted">
-                                        Select an existing user account to link with this student
-                                    </small>
-                                </div>
-                            </div> --}}
-
-                            <div class="col-md-12">
-                                <div class="form-check mb-3">
-                                    {{-- <input class="form-check-input" type="radio" name="user_option" id="new_user"
-                                        value="new"> --}}
-                                    <label class="form-check-label" for="new_user">
-                                        Create New User Account
-                                    </label>
-                                </div>
-
-                                <div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-
-                                            <div class="col-md-12 mb-3">
-                                                <label class="required-field">name</label>
-                                                <input type="text" name="name" class="form-control"
-                                                    value="{{ old('name') }}">
-                                            </div>
-                                            <div class="col-md-12 mb-3">
-                                                <label class="required-field">Select Role</label>
-                                                <select name="role" class="form-select" id="role">
-                                                    <option value="">-- Select Role --</option>
-                                                    @foreach (array_column(\App\Helpers\UserRoles::cases(), 'value') as $role)
-                                                        <option value="{{ $role }}"
-                                                            {{ old('role') == $role ? 'selected' : '' }}>
-                                                            {{ $role }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-
-                                            <div class="col-md-12 mb-3">
-                                                <label class="required-field">Email Address</label>
-                                                <input type="email" name="email" class="form-control"
-                                                    value="{{ old('email') }}" placeholder="student@example.com">
-                                            </div>
-                                            <div class="row">
-
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="required-field">Password</label>
-                                                    <input type="password" name="password" class="form-control">
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="required-field">Confirm Password</label>
-                                                    <input type="password" name="password_confirmation"
-                                                        class="form-control">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <input type="hidden" name="create_new_user" value="1">
-                                    </div>
-                                    <small class="form-text text-muted">
-                                        A new user account will be created with student role
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- ===== STEP 1 – Personal Information ================================== -->
         <div class="row setup-content" id="step-1">
             <div class="col-md-12">
-                <h3 class="step-title"><strong>Admission & Personal Data</strong></h3>
+                <h3 class="step-title"><strong>Personal Information</strong></h3>
+
+                <!-- Email for account creation -->
                 <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="required-field">Admission Year</label>
-                        <input type="number" min="1900" max="2099" name="admission_year"
-                            value="{{ old('admission_year') }}" class="form-control" required>
+                    <div class="col-md-6">
+                        <label class="required-field">Email Address</label>
+                        <input type="email" name="email" class="form-control"
+                            value="{{ old('email', $isEdit ? $student->user->email : '') }}"
+                            placeholder="student@example.com" required>
+                        <small class="form-text text-muted">This will be used for the student account login</small>
                     </div>
-                    <div class="col-md-3">
-                        <label class="required-field">Joining Class</label>
-                        <input type="text" name="joining_class" value="{{ old('joining_class') }}"
-                            class="form-control" placeholder="e.g. S.1" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label>A-Level Combination</label>
-                        <input type="text" name="a_level_combination" value="{{ old('a_level_combination') }}"
-                            class="form-control" placeholder="e.g. PCM">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="required-field">Applying Section</label>
-                        <select name="applying_section" class="form-select" required>
-                            <option value="">-- Select Section --</option>
-                            @foreach (array_column(\App\Helpers\ApplyingSection::cases(), 'value') as $s)
-                                <option value="{{ $s }}"
-                                    {{ old('applying_section') == $s ? 'selected' : '' }}>
-                                    {{ $s }}
-                                </option>
-                            @endforeach
-                        </select>
+                    <div class="col-md-6">
+                        <label>Account Name (Not editable)</label>
+                        <input type="text" id="preview_name" class="form-control" readonly
+                            placeholder="Will be generated from names below"
+                            style="background-color: #e9ecef;">
+                        <small class="form-text text-muted">Generated from First Name & Last Name</small>
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="required-field">Surname</label>
-                        <input type="text" name="last_name" value="{{ old('last_name') }}" class="form-control"
-                            required>
+                        <input type="text" name="last_name" id="last_name"
+                            value="{{ old('last_name', $isEdit ? $student->last_name : '') }}"
+                            class="form-control name-input" required>
                     </div>
                     <div class="col-md-4">
                         <label class="required-field">First Name</label>
-                        <input type="text" name="first_name" value="{{ old('first_name') }}"
-                            class="form-control" required>
+                        <input type="text" name="first_name" id="first_name"
+                            value="{{ old('first_name', $isEdit ? $student->first_name : '') }}"
+                            class="form-control name-input" required>
                     </div>
                     <div class="col-md-4">
                         <label>Other Names</label>
-                        <input type="text" name="middle_name" value="{{ old('middle_name') }}"
-                            class="form-control">
+                        <input type="text" name="middle_name" id="middle_name"
+                            value="{{ old('middle_name', $isEdit ? $student->middle_name : '') }}"
+                            class="form-control name-input">
                     </div>
                 </div>
 
@@ -182,7 +98,8 @@
                         <select name="gender" class="form-select" required>
                             <option value="">-- Select Gender --</option>
                             @foreach (array_column(\App\Helpers\Gender::cases(), 'value') as $g)
-                                <option value="{{ $g }}" {{ old('gender') == $g ? 'selected' : '' }}>
+                                <option value="{{ $g }}"
+                                    {{ old('gender', $isEdit ? $student->gender : '') == $g ? 'selected' : '' }}>
                                     {{ $g }}
                                 </option>
                             @endforeach
@@ -190,14 +107,20 @@
                     </div>
                     <div class="col-md-3">
                         <label class="required-field">Date of Birth</label>
-                        <input type="date" name="dob" value="{{ old('dob') }}" class="form-control"
-                            required>
+                        <input type="date" name="dob" value="{{ old('dob', $isEdit ? $student->dob : '') }}"
+                            class="form-control" required>
                     </div>
                     <div class="col-md-3">
                         <label class="required-field">Citizenship (multiple)</label>
-                        <select name="citizenship[]" class="form-select" multiple required>
+                        <select name="citizenship[]" class="form-select select2-multiple" multiple required>
+                            @php
+                                $studentCitizenship = $isEdit
+                                    ? (json_decode($student->citizenship ?? '[]', true) ?: [])
+                                    : [];
+                                $oldCitizenship = old('citizenship', $studentCitizenship);
+                            @endphp
                             @foreach (countries() as $code => $name)
-                                <option value="{{ $code }}" @if (in_array($code, old('citizenship', []))) selected @endif>
+                                <option value="{{ $code }}" @if (in_array($code, $oldCitizenship)) selected @endif>
                                     {{ $name }}
                                 </option>
                             @endforeach
@@ -209,7 +132,7 @@
                             <option value="">-- Select Religion --</option>
                             @foreach (array_column(\App\Helpers\ReligiousAffiliation::cases(), 'value') as $r)
                                 <option value="{{ $r }}"
-                                    {{ old('religious_affiliation') == $r ? 'selected' : '' }}>
+                                    {{ old('religious_affiliation', $isEdit ? $student->religious_affiliation : '') == $r ? 'selected' : '' }}>
                                     {{ $r }}
                                 </option>
                             @endforeach
@@ -220,47 +143,20 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="required-field">Spoken Languages</label>
-                        <select name="spoken_languages[]" class="form-select" multiple required>
+                        <select name="spoken_languages[]" class="form-select select2-multiple" multiple required>
+                            @php
+                                $studentLanguages = $isEdit
+                                    ? (json_decode($student->spoken_languages ?? '[]', true) ?: [])
+                                    : [];
+                                $oldLanguages = old('spoken_languages', $studentLanguages);
+                            @endphp
                             @foreach (languages() as $code => $name)
-                                <option value="{{ $code }}" @if (in_array($code, old('spoken_languages', []))) selected @endif>
+                                <option value="{{ $code }}" @if (in_array($code, $oldLanguages)) selected @endif>
                                     {{ $name }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <label class="required-field">ID Type</label>
-                        <select name="id_type" class="form-select" required>
-                            <option value="">-- Select ID Type --</option>
-                            @foreach (array_column(\App\Helpers\IDType::cases(), 'value') as $t)
-                                <option value="{{ $t }}" {{ old('id_type') == $t ? 'selected' : '' }}>
-                                    {{ $t }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="required-field">ID No</label>
-                        <input type="text" name="id_no" value="{{ old('id_no') }}" class="form-control"
-                            required>
-                    </div>
-                </div>
-
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label class="required-field">Upload ID Image (≤2 MB)</label>
-                        <input type="file" name="id_image_path" class="form-control" accept="image/*" required>
-                        <small class="form-text text-muted">Accepted formats: JPG, PNG, GIF. Max
-                            size: 2MB</small>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="required-field">Upload an Identification Image (≤2 MB)</label>
-                        <input type="file" name="identification_image" class="form-control" accept="image/*"
-                            required>
-                        <small class="form-text text-muted">Accepted formats: JPG, PNG, GIF. Max
-                            size: 2MB</small>
-                    </div>
-
                 </div>
 
                 <div class="d-flex justify-content-end">
@@ -271,63 +167,175 @@
             </div>
         </div>
 
-        <!-- ===== STEP 2 – Academic History ======================================= -->
+        <!-- ===== STEP 2 – Admission & Identification ============================ -->
         <div class="row setup-content" id="step-2" style="display: none;">
+            <div class="col-md-12">
+                <h3 class="step-title"><strong>Admission & Identification</strong></h3>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label class="required-field">Admission Year</label>
+                        <input type="number" min="1900" max="2099" name="admission_year"
+                            value="{{ old('admission_year', $isEdit ? $student->admission_year : '') }}"
+                            class="form-control" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="required-field">Joining Class</label>
+                        <input type="text" name="joining_class"
+                            value="{{ old('joining_class', $isEdit ? $student->joining_class : '') }}"
+                            class="form-control" placeholder="e.g. S.1" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label>A-Level Combination</label>
+                        <input type="text" name="a_level_combination"
+                            value="{{ old('a_level_combination', $isEdit ? $student->a_level_combination : '') }}"
+                            class="form-control" placeholder="e.g. PCM">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="required-field">Applying Section</label>
+                        <select name="applying_section" class="form-select" required>
+                            <option value="">-- Select Section --</option>
+                            @foreach (array_column(\App\Helpers\ApplyingSection::cases(), 'value') as $s)
+                                <option value="{{ $s }}"
+                                    {{ old('applying_section', $isEdit ? $student->applying_section : '') == $s ? 'selected' : '' }}>
+                                    {{ $s }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="required-field">ID Type</label>
+                        <select name="id_type" class="form-select" required>
+                            <option value="">-- Select ID Type --</option>
+                            @foreach (array_column(\App\Helpers\IDType::cases(), 'value') as $t)
+                                <option value="{{ $t }}"
+                                    {{ old('id_type', $isEdit ? $student->id_type : '') == $t ? 'selected' : '' }}>
+                                    {{ $t }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="required-field">ID No</label>
+                        <input type="text" name="id_no"
+                            value="{{ old('id_no', $isEdit ? $student->id_no : '') }}"
+                            class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="{{ $isEdit ? '' : 'required-field' }}">Upload ID Image (≤2 MB)</label>
+                        <input type="file" name="id_image_path" class="form-control" accept="image/*"
+                            {{ $isEdit ? '' : 'required' }}>
+                        @if ($isEdit && $student->id_image_path)
+                            <div class="mt-2">
+                                <p class="file-preview">Current ID Image:</p>
+                                <img src="{{ asset('storage/' . $student->id_image_path) }}"
+                                    alt="Current ID Image" class="current-id-image">
+                                <p class="file-preview">Leave empty to keep current image</p>
+                            </div>
+                        @endif
+                        <small class="form-text text-muted">Accepted formats: JPG, PNG, GIF. Max size: 2MB</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="{{ $isEdit ? '' : 'required-field' }}">Upload an Identification Image (≤2 MB)</label>
+                        <input type="file" name="identification_image" class="form-control" accept="image/*"
+                            {{ $isEdit ? '' : 'required' }}>
+                        @if ($isEdit && $student->identification_image)
+                            <div class="mt-2">
+                                <p class="file-preview">Current Identification Image:</p>
+                                <img src="{{ asset('storage/' . $student->identification_image) }}"
+                                    alt="Current Identification Image" class="current-identification-image">
+                                <p class="file-preview">Leave empty to keep current image</p>
+                            </div>
+                        @endif
+                        <small class="form-text text-muted">Accepted formats: JPG, PNG, GIF. Max size: 2MB</small>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-secondary prevBtn" type="button">
+                        <i class="bi bi-arrow-left-circle-fill me-1"></i> Previous
+                    </button>
+                    <button class="btn btn-indigo nextBtn" type="button">
+                        Next <i class="bi bi-arrow-right-circle-fill ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== STEP 3 – Academic History ======================================= -->
+        <div class="row setup-content" id="step-3" style="display: none;">
             <div class="col-md-12">
                 <h3 class="step-title"><strong>Academic History</strong></h3>
 
                 <div id="academic-history-wrapper">
-                    @if (count(old('academic_history', [])) > 0)
-                        @foreach (old('academic_history', [[]]) as $index => $academic)
+                    @php
+                        if ($isEdit) {
+                            $academicHistories = old('academic_history', $student->academicHistories->toArray());
+                            if (empty($academicHistories)) {
+                                $academicHistories = [['' => '']];
+                            }
+                        } else {
+                            $academicHistories = old('academic_history', []);
+                        }
+                    @endphp
+
+                    @if (count($academicHistories) > 0)
+                        @foreach ($academicHistories as $index => $academic)
                             <div class="card mb-3 academic-block">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <label>Academic Level</label>
+                                            <label class="required-field">Academic Level</label>
                                             <select name="academic_history[{{ $index }}][academic_level]"
-                                                class="form-select">
+                                                class="form-select academic-level-select" required>
                                                 <option value="">-- Select --</option>
                                                 @foreach (array_column(\App\Helpers\AcademicLevel::cases(), 'value') as $lvl)
                                                     <option value="{{ $lvl }}"
-                                                        {{ isset($academic['academic_level']) && $academic['academic_level'] == $lvl ? 'selected' : '' }}>
+                                                        {{ old("academic_history.{$index}.academic_level", $academic['academic_level'] ?? '') == $lvl ? 'selected' : '' }}>
                                                         {{ $lvl }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="col-md-2">
-                                            <label>School Name</label>
+                                            <label class="required-field">School Name</label>
                                             <input type="text"
                                                 name="academic_history[{{ $index }}][school_name]"
-                                                class="form-control" placeholder="School"
-                                                value="{{ $academic['school_name'] ?? '' }}">
+                                                class="form-control" placeholder="School" required
+                                                value="{{ old("academic_history.{$index}.school_name", $academic['school_name'] ?? '') }}">
                                         </div>
                                         <div class="col-md-2">
-                                            <label>From Year</label>
+                                            <label class="required-field">From Year</label>
                                             <input type="number" min="1900" max="2099"
                                                 name="academic_history[{{ $index }}][from_year]"
-                                                class="form-control" placeholder="From YYYY"
-                                                value="{{ $academic['from_year'] ?? '' }}">
+                                                class="form-control" placeholder="From YYYY" required
+                                                value="{{ old("academic_history.{$index}.from_year", $academic['from_year'] ?? '') }}">
                                         </div>
                                         <div class="col-md-2">
-                                            <label>To Year</label>
+                                            <label class="required-field">To Year</label>
                                             <input type="number" min="1900" max="2099"
                                                 name="academic_history[{{ $index }}][to_year]"
-                                                class="form-control" placeholder="To YYYY"
-                                                value="{{ $academic['to_year'] ?? '' }}">
+                                                class="form-control" placeholder="To YYYY" required
+                                                value="{{ old("academic_history.{$index}.to_year", $academic['to_year'] ?? '') }}">
                                         </div>
                                         <div class="col-md-1">
-                                            <label>Aggregate Score</label>
+                                            <label class="required-field">Agg Score</label>
                                             <input type="text"
                                                 name="academic_history[{{ $index }}][aggregate_score]"
-                                                class="form-control" placeholder="Agg"
-                                                value="{{ $academic['aggregate_score'] ?? '' }}">
+                                                class="form-control" placeholder="Agg" required
+                                                value="{{ old("academic_history.{$index}.aggregate_score", $academic['aggregate_score'] ?? '') }}">
                                         </div>
                                         <div class="col-md-1">
                                             <label>Grade</label>
                                             <input type="text" name="academic_history[{{ $index }}][grade]"
                                                 class="form-control" placeholder="Grade"
-                                                value="{{ $academic['grade'] ?? '' }}">
+                                                value="{{ old("academic_history.{$index}.grade", $academic['grade'] ?? '') }}">
                                         </div>
                                         <div class="col-md-2 align-self-end">
                                             @if ($loop->first)
@@ -343,21 +351,22 @@
                                             @endif
                                         </div>
                                     </div>
+
                                     <div class="row mt-3">
                                         <div class="col-md-3">
                                             <label>Repeated class?</label>
-
                                             <select name="academic_history[{{ $index }}][repeat_class]"
-                                                id="repeat_class" class="form-select">
+                                                class="form-select repeat-toggle">
                                                 <option value="0"
-                                                    {{ old("academic_history.{$index}.repeat_class") == '0' ? 'selected' : '' }}>
+                                                    {{ old("academic_history.{$index}.repeat_class", $academic['repeat_class'] ?? '0') == '0' ? 'selected' : '' }}>
                                                     No</option>
                                                 <option value="1"
-                                                    {{ old("academic_history.{$index}.repeat_class") == '1' ? 'selected' : '' }}>
+                                                    {{ old("academic_history.{$index}.repeat_class", $academic['repeat_class'] ?? '0') == '1' ? 'selected' : '' }}>
                                                     Yes</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-3 repeated-class-field"
+                                            style="{{ old("academic_history.{$index}.repeat_class", $academic['repeat_class'] ?? '0') == '1' ? '' : 'display:none' }}">
                                             <label>Repeated class</label>
                                             <input type="text"
                                                 name="academic_history[{{ $index }}][repeated_class]"
@@ -366,51 +375,69 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label>Skipped class?</label>
-
                                             <select name="academic_history[{{ $index }}][skip_class]"
-                                                id="skip_class" class="form-select">
+                                                class="form-select skip-toggle">
                                                 <option value="0"
-                                                    {{ old("academic_history.{$index}.skip_class") == '0' ? 'selected' : '' }}>
+                                                    {{ old("academic_history.{$index}.skip_class", $academic['skip_class'] ?? '0') == '0' ? 'selected' : '' }}>
                                                     No</option>
                                                 <option value="1"
-                                                    {{ old("academic_history.{$index}.skip_class") == '1' ? 'selected' : '' }}>
+                                                    {{ old("academic_history.{$index}.skip_class", $academic['skip_class'] ?? '0') == '1' ? 'selected' : '' }}>
                                                     Yes</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-3 skipped-class-field"
+                                            style="{{ old("academic_history.{$index}.skip_class", $academic['skip_class'] ?? '0') == '1' ? '' : 'display:none' }}">
                                             <label>Skipped class</label>
                                             <input type="text"
                                                 name="academic_history[{{ $index }}][skipped_class]"
                                                 class="form-control" placeholder="eg: S.1"
                                                 value="{{ old("academic_history.{$index}.skipped_class", $academic['skipped_class'] ?? '') }}">
                                         </div>
-                                        <div class="row mt-3 file-row">
-                                            <div class="col-md-4 file-group ple-file">
-                                                <label>PLE File</label>
-                                                <input type="file" name="academic_history[0][ple_file]"
-                                                    class="form-control">
-                                            </div>
-                                            <div class="col-md-4 file-group o-level-file">
-                                                <label>O-Level File</label>
-                                                <input type="file" name="academic_history[0][o_level_file]"
-                                                    class="form-control">
-                                            </div>
-                                            <div class="col-md-4 file-group other-file">
-                                                <label>Other File</label>
-                                                <input type="file" name="academic_history[0][other_file]"
-                                                    class="form-control">
-                                            </div>
+                                    </div>
+
+                                    <div class="row mt-3 file-row">
+                                        <div class="col-md-4 file-group ple-file" style="display:none;">
+                                            <label>PLE File</label>
+                                            <input type="file"
+                                                name="academic_history[{{ $index }}][ple_file]"
+                                                class="form-control">
+                                            @if ($isEdit && !empty($academic['ple_file']))
+                                                <p class="file-preview">Current: {{ basename($academic['ple_file']) }}
+                                                </p>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-4 file-group o-level-file" style="display:none;">
+                                            <label>O-Level File</label>
+                                            <input type="file"
+                                                name="academic_history[{{ $index }}][o_level_file]"
+                                                class="form-control">
+                                            @if ($isEdit && !empty($academic['o_level_file']))
+                                                <p class="file-preview">Current:
+                                                    {{ basename($academic['o_level_file']) }}</p>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-4 file-group other-file" style="display:none;">
+                                            <label>Other File</label>
+                                            <input type="file"
+                                                name="academic_history[{{ $index }}][other_file]"
+                                                class="form-control">
+                                            @if ($isEdit && !empty($academic['other_file']))
+                                                <p class="file-preview">Current:
+                                                    {{ basename($academic['other_file']) }}</p>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                         @endforeach
                     @else
                         <div class="card mb-3 academic-block">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <label>Academic Level</label>
-                                        <select name="academic_history[0][academic_level]" class="form-select">
+                                        <label class="required-field">Academic Level</label>
+                                        <select name="academic_history[0][academic_level]"
+                                            class="form-select academic-level-select" required>
                                             <option value="">-- Select --</option>
                                             @foreach (array_column(\App\Helpers\AcademicLevel::cases(), 'value') as $lvl)
                                                 <option value="{{ $lvl }}">{{ $lvl }}</option>
@@ -418,24 +445,24 @@
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <label>School Name</label>
+                                        <label class="required-field">School Name</label>
                                         <input type="text" name="academic_history[0][school_name]"
-                                            class="form-control" placeholder="School">
+                                            class="form-control" placeholder="School" required>
                                     </div>
                                     <div class="col-md-2">
-                                        <label>From Year</label>
+                                        <label class="required-field">From Year</label>
                                         <input type="number" name="academic_history[0][from_year]"
-                                            class="form-control" placeholder="From YYYY">
+                                            class="form-control" placeholder="From YYYY" required>
                                     </div>
                                     <div class="col-md-2">
-                                        <label>To Year</label>
+                                        <label class="required-field">To Year</label>
                                         <input type="number" name="academic_history[0][to_year]"
-                                            class="form-control" placeholder="To YYYY">
+                                            class="form-control" placeholder="To YYYY" required>
                                     </div>
                                     <div class="col-md-1">
-                                        <label>Aggregate Score</label>
+                                        <label class="required-field">Agg Score</label>
                                         <input type="text" name="academic_history[0][aggregate_score]"
-                                            class="form-control" placeholder="Agg">
+                                            class="form-control" placeholder="Agg" required>
                                     </div>
                                     <div class="col-md-1">
                                         <label>Grade</label>
@@ -449,24 +476,53 @@
                                         </button>
                                     </div>
                                 </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-3">
+                                        <label>Repeated class?</label>
+                                        <select name="academic_history[0][repeat_class]"
+                                            class="form-select repeat-toggle">
+                                            <option value="0">No</option>
+                                            <option value="1">Yes</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 repeated-class-field" style="display:none;">
+                                        <label>Repeated class</label>
+                                        <input type="text" name="academic_history[0][repeated_class]"
+                                            class="form-control" placeholder="eg: S.1">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Skipped class?</label>
+                                        <select name="academic_history[0][skip_class]"
+                                            class="form-select skip-toggle">
+                                            <option value="0">No</option>
+                                            <option value="1">Yes</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 skipped-class-field" style="display:none;">
+                                        <label>Skipped class</label>
+                                        <input type="text" name="academic_history[0][skipped_class]"
+                                            class="form-control" placeholder="eg: S.1">
+                                    </div>
+                                </div>
+
                                 <div class="row mt-3 file-row">
-                                    <div class="col-md-4 file-group ple-file">
+                                    <div class="col-md-4 file-group ple-file" style="display:none;">
                                         <label>PLE File</label>
                                         <input type="file" name="academic_history[0][ple_file]"
                                             class="form-control">
                                     </div>
-                                    <div class="col-md-4 file-group o-level-file">
+                                    <div class="col-md-4 file-group o-level-file" style="display:none;">
                                         <label>O-Level File</label>
                                         <input type="file" name="academic_history[0][o_level_file]"
                                             class="form-control">
                                     </div>
-                                    <div class="col-md-4 file-group other-file">
+                                    <div class="col-md-4 file-group other-file" style="display:none;">
                                         <label>Other File</label>
                                         <input type="file" name="academic_history[0][other_file]"
                                             class="form-control">
                                     </div>
                                 </div>
-                                
                             </div>
                         </div>
                     @endif
@@ -483,34 +539,51 @@
             </div>
         </div>
 
-        <!-- ===== STEP 3 – Medical, Discipline, Career, Misc ===================== -->
-        <div class="row setup-content" id="step-3" style="display: none;">
+        <!-- ===== STEP 4 – Health, Discipline & Career ========================== -->
+        <div class="row setup-content" id="step-4" style="display: none;">
             <div class="col-md-12">
                 <h3 class="step-title"><strong>Health, Conduct & Career</strong></h3>
+
+                @php
+                    $medicalHistory = $isEdit ? $student->medicalHistory ?? null : null;
+                    $disciplineHistory = $isEdit ? $student->disciplineHistory ?? null : null;
+                    $careerAspiration = $isEdit ? $student->careerAspiration ?? null : null;
+                @endphp
 
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label>Any Health Issues?</label>
                             <select name="has_health_issues" id="has_health_issues" class="form-select">
-                                <option value="0" {{ old('has_health_issues') == '0' ? 'selected' : '' }}>No
+                                <option value="0"
+                                    {{ old('has_health_issues', $medicalHistory->has_health_issues ?? 0) == '0' ? 'selected' : '' }}>
+                                    No
                                 </option>
-                                <option value="1" {{ old('has_health_issues') == '1' ? 'selected' : '' }}>Yes
+                                <option value="1"
+                                    {{ old('has_health_issues', $medicalHistory->has_health_issues ?? 0) == '1' ? 'selected' : '' }}>
+                                    Yes
                                 </option>
                             </select>
                         </div>
                         <div id="health-details" class="mt-2"
-                            style="{{ old('has_health_issues') == '1' ? '' : 'display:none' }}">
+                            style="{{ old('has_health_issues', $medicalHistory->has_health_issues ?? 0) == '1' ? '' : 'display:none' }}">
                             <div class="mb-3">
                                 <label>Health Condition Details</label>
                                 <textarea name="health_issues" class="form-control" rows="3"
-                                    placeholder="Describe condition / attach files below">{{ old('health_issues') }}</textarea>
+                                    placeholder="Describe condition / attach files below">{{ old('health_issues', $medicalHistory->health_issues ?? '') }}</textarea>
                             </div>
                             <div class="mb-3">
                                 <label>Upload Medical Reports</label>
                                 <input type="file" name="medical_files[]" multiple class="form-control">
-                                <small class="form-text text-muted">You can upload multiple files
-                                    (PDF, JPG, PNG)</small>
+                                <small class="form-text text-muted">You can upload multiple files (PDF, JPG, PNG)</small>
+                                @if ($isEdit && $medicalHistory && $medicalHistory->files)
+                                    @php
+                                        $files = json_decode($medicalHistory->files, true) ?: [];
+                                    @endphp
+                                    @if (!empty($files))
+                                        <p class="file-preview">Current files: {{ count($files) }} file(s)</p>
+                                    @endif
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -519,21 +592,23 @@
                         <div class="mb-3">
                             <label>Any Disciplinary Issues?</label>
                             <select name="has_disciplinary_issues" id="has_disciplinary_issues" class="form-select">
-                                <option value="0" {{ old('has_disciplinary_issues') == '0' ? 'selected' : '' }}>
+                                <option value="0"
+                                    {{ old('has_disciplinary_issues', $disciplineHistory->has_disciplinary_issues ?? 0) == '0' ? 'selected' : '' }}>
                                     No</option>
-                                <option value="1" {{ old('has_disciplinary_issues') == '1' ? 'selected' : '' }}>
+                                <option value="1"
+                                    {{ old('has_disciplinary_issues', $disciplineHistory->has_disciplinary_issues ?? 0) == '1' ? 'selected' : '' }}>
                                     Yes</option>
                             </select>
                         </div>
                         <div id="discipline-details" class="mt-2"
-                            style="{{ old('has_disciplinary_issues') == '1' ? '' : 'display:none' }}">
+                            style="{{ old('has_disciplinary_issues', $disciplineHistory->has_disciplinary_issues ?? 0) == '1' ? '' : 'display:none' }}">
                             <div class="mb-3">
                                 <label>Action Taken</label>
                                 <select name="disciplinary_issues" class="form-select">
                                     <option value="">-- Select Action --</option>
                                     @foreach (array_column(\App\Helpers\DisciplineAction::cases(), 'value') as $d)
                                         <option value="{{ $d }}"
-                                            {{ old('disciplinary_issues') == $d ? 'selected' : '' }}>
+                                            {{ old('disciplinary_issues', $disciplineHistory->disciplinary_issues ?? '') == $d ? 'selected' : '' }}>
                                             {{ $d }}
                                         </option>
                                     @endforeach
@@ -541,7 +616,7 @@
                             </div>
                             <div class="mb-3">
                                 <label>Reason / Details</label>
-                                <textarea name="reason" class="form-control" rows="3" placeholder="Reason / details">{{ old('reason') }}</textarea>
+                                <textarea name="reason" class="form-control" rows="3" placeholder="Reason / details">{{ old('reason', $disciplineHistory->reason ?? '') }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -550,22 +625,22 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label class="required-field">Career Aspiration</label>
-                        <select name="aspiration" class="form-select">
+                        <select name="aspiration" class="form-select" required>
                             <option value="">-- Select Aspiration --</option>
                             @foreach (array_column(\App\Helpers\CareerAspirations::cases(), 'value') as $c)
-                                <option value="{{ $c }}" {{ old('aspiration') == $c ? 'selected' : '' }}>
+                                <option value="{{ $c }}"
+                                    {{ old('aspiration', $careerAspiration->aspiration ?? '') == $c ? 'selected' : '' }}>
                                     {{ $c }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="required-field">Best Done Subjects(select more than one)</label>
-                        <select name="best_done_subjects[]" class="form-select" multiple>
-                            <option value="">-- Select Subject --</option>
+                        <label class="required-field">Best Done Subjects (select more than one)</label>
+                        <select name="best_done_subjects[]" class="form-select select2-multiple" multiple required>
                             @foreach (array_column(\App\Helpers\Subjects::cases(), 'value') as $s)
                                 <option value="{{ $s }}"
-                                    {{ old('best_done_subjects') == $s ? 'selected' : '' }}>
+                                    {{ in_array($s, old('best_done_subjects', $isEdit && $careerAspiration && $careerAspiration->best_done_subjects ? json_decode($careerAspiration->best_done_subjects, true) : [])) ? 'selected' : '' }}>
                                     {{ $s }}
                                 </option>
                             @endforeach
@@ -576,11 +651,10 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label class="required-field">Worst Done Subjects</label>
-                        <select name="worst_done_subjects[]" class="form-select" multiple>
-                            <option value="">-- Select Subject --</option>
+                        <select name="worst_done_subjects[]" class="form-select select2-multiple" multiple required>
                             @foreach (array_column(\App\Helpers\Subjects::cases(), 'value') as $s)
                                 <option value="{{ $s }}"
-                                    {{ old('worst_done_subjects') == $s ? 'selected' : '' }}>
+                                    {{ in_array($s, old('worst_done_subjects', $isEdit && $careerAspiration && $careerAspiration->worst_done_subjects ? json_decode($careerAspiration->worst_done_subjects, true) : [])) ? 'selected' : '' }}>
                                     {{ $s }}
                                 </option>
                             @endforeach
@@ -588,23 +662,22 @@
                     </div>
                     <div class="col-md-6">
                         <label class="required-field">Favorite Subjects</label>
-                        <select name="favorite_subjects[]" class="form-select" multiple>
-                            <option value="">-- Select Subject --</option>
+                        <select name="favorite_subjects[]" class="form-select select2-multiple" multiple required>
                             @foreach (array_column(\App\Helpers\Subjects::cases(), 'value') as $s)
                                 <option value="{{ $s }}"
-                                    {{ old('favorite_subjects') == $s ? 'selected' : '' }}>
+                                    {{ in_array($s, old('favorite_subjects', $isEdit && $careerAspiration && $careerAspiration->favorite_subjects ? json_decode($careerAspiration->favorite_subjects, true) : [])) ? 'selected' : '' }}>
                                     {{ $s }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
-
                 </div>
+
                 <div class="row mb-4">
                     <div class="col-md-12">
                         <label>Additional Information</label>
                         <textarea name="additional_info" class="form-control" rows="4"
-                            placeholder="Anything else you want the school to know">{{ old('additional_info') }}</textarea>
+                            placeholder="Anything else you want the school to know">{{ old('additional_info', $isEdit ? $student->additional_info : '') }}</textarea>
                     </div>
                 </div>
 
@@ -613,12 +686,12 @@
                         <i class="bi bi-arrow-left-circle-fill me-1"></i> Previous
                     </button>
                     <button class="btn btn-success" type="submit">
-                        <i class="fas fa-paper-plane me-1"></i> Submit Application
+                        <i class="fas {{ $isEdit ? 'fa-save' : 'fa-paper-plane' }} me-1"></i>
+                        {{ $isEdit ? 'Update Student' : 'Submit Application' }}
                     </button>
                 </div>
             </div>
         </div>
     </form>
-
 </div>
 <!-- Steps form -->

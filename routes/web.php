@@ -29,6 +29,7 @@ Route::middleware('auth', 'auth.session')->group(function () {
         Route::get('/students/{student}/edit', 'edit')->name('students.edit');
         Route::put('/students/{student}', 'update')->name('students.update');
         Route::delete('/students/{student}', 'destroy')->name('students.destroy');
+        // Route::get('/students/{student}/print', 'print')->name('students.print');
     });
 
 

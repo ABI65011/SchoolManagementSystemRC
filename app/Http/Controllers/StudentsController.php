@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Enum;
 
 class StudentsController extends Controller
 {
@@ -59,72 +60,72 @@ class StudentsController extends Controller
     {
         Log::info('STORE ROUTE REACHED', $request->all());
         Log::info('VALIDATION START');
-        // dd($request->all());
-        $validator = Validator::make($request->all(), [
-            // User validation mwahahahaha..
-            "name" => "required",
-            "email" => "required|unique:users,email",
-            "role" => "required|in:" . implode(",", array_column(UserRoles::cases(), "value")),
 
-            //Students validation
-            // 'user_id' => 'required|exists:users,id',
-            'admission_year' => 'required|integer',
-            'identification_image' => 'required',
-            'joining_class' => 'required',
-            'first_name' => 'required',
-            'middle_name' => 'nullable',
-            'last_name' => 'required',
+        $validator = Validator::make($request->all(), [
+            // user
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'role' => ['required', new Enum(UserRoles::class)],
+            'password' => 'required|min:6',
+
+            // student
+            'first_name' => 'required|string|max:100',
+            'middle_name' => 'nullable|string|max:100',
+            'last_name' => 'required|string|max:100',
             'dob' => 'required|date',
             'gender' => 'required|string|max:50',
             'citizenship' => 'required|array',
-            'id_type' => 'required|in:' . implode(',', array_column(IDType::cases(), 'value')),
-            'id_no' => 'required|string|    max:100|unique:students,id_no',
-            'id_image_path' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048',
-            'a_level_combination' => 'nullable',
-            'applying_section' => 'required|in:' . implode(',', array_column(ApplyingSection::cases(), 'value')),
+            'citizenship.*' => 'string',
             'religious_affiliation' => 'required|in:' . implode(',', array_column(ReligiousAffiliation::cases(), 'value')),
-            'other_religious_affiliation' => 'nullable',
-            'has_aditional_info' => 'boolean',
-            'additional_info' => 'nullable',
             'spoken_languages' => 'required|array',
+            'spoken_languages.*' => 'string',
 
-            //Academic History validation
-            'academic_history'          => 'required|array|min:1',
-            'academic_history.0.students_id' => 'nullable|exists:students,id',
-            'academic_history.0.academic_level' => 'required|in:' . implode(',', array_column(AcademicLevel::cases(), 'value')),
-            'academic_history.0.school_name'    => 'required|string|max:200',
-            'academic_history.0.from_year'      => 'required|integer',
-            'academic_history.0.to_year'        => 'required|integer',
-            'academic_history.0.aggregate_score' => 'required|numeric',
-            'average_position' => 'nullable',
-            'grade' => 'nullable',
-            'ple_file' => 'nullable|string|max:2048',
-            'o_level_file' => 'nullable|string|max:2048',
-            'other_file' => 'nullable|string|max:2048',
-            'academic_history.0.repeat_class' => 'boolean',
-            'academic_history.0.repeated_class' => 'nullable',
-            'academic_history.0.skip_class' => 'boolean',
-            'academic_history.0.skipped_class' => 'nullable',
+            'admission_year' => 'required|integer',
+            'joining_class' => 'required|string|max:50',
+            'a_level_combination' => 'nullable|string|max:50',
+            'applying_section' => 'required|in:' . implode(',', array_column(ApplyingSection::cases(), 'value')),
+            'id_type' => 'required|in:' . implode(',', array_column(IDType::cases(), 'value')),
+            'id_no' => 'required|string|max:100|unique:students,id_no',
+            'id_image_path' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048',
+            'identification_image' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048',
 
-            //Medical History validation
-            'has_health_issues' => 'boolean',
-            'health_issues' => 'nullable',
-            'files' => 'nullable|string|max:2048',
+            // ACADEMIC HISTORY
+            'academic_history' => 'required|array|min:1',
+            'academic_history.*.academic_level' => 'required|in:' . implode(',', array_column(AcademicLevel::cases(), 'value')),
+            'academic_history.*.school_name' => 'required|string|max:200',
+            'academic_history.*.from_year' => 'required|integer',
+            'academic_history.*.to_year' => 'required|integer',
+            'academic_history.*.aggregate_score' => 'required|numeric',
+            'academic_history.*.grade' => 'nullable|string|max:50',
+            'academic_history.*.ple_file' => 'nullable|file|max:2048',
+            'academic_history.*.o_level_file' => 'nullable|file|max:2048',
+            'academic_history.*.other_file' => 'nullable|file|max:2048',
+            'academic_history.*.repeat_class' => 'nullable|boolean',
+            'academic_history.*.repeated_class' => 'nullable|string|max:50',
+            'academic_history.*.skip_class' => 'nullable|boolean',
+            'academic_history.*.skipped_class' => 'nullable|string|max:50',
 
-            //Discipline History validation
-            'has_disciplinary_issues' => 'boolean',
+            // MEDICAL HISTORY
+            'has_health_issues' => 'nullable|boolean',
+            'health_issues' => 'nullable|string',
+            'medical_files' => 'nullable|array',
+            'medical_files.*' => 'file|max:2048',
+
+            // DISCIPLINE HISTORY
+            'has_disciplinary_issues' => 'nullable|boolean',
             'disciplinary_issues' => 'nullable|in:' . implode(',', array_column(DisciplineAction::cases(), 'value')),
-            'reason' => 'nullable',
+            'reason' => 'nullable|string',
 
-            //Career Aspiration validation
-            'aspiration' => 'nullable|in:' . implode(',', array_column(CareerAspirations::cases(), 'value')),
-            'other_aspiration' => 'nullable',
-            'best_done_subjects' => 'required|array|in:' . implode(',', array_column(Subjects::cases(), 'value')),
-            // 'other_best_done_subjects' => 'nullable',
-            'worst_done_subjects' => 'required|array|in:' . implode(',', array_column(Subjects::cases(), 'value')),
-            // 'other_worst_done_subjects' => 'nullable',
-            'favorite_subjects' => 'required|array|in:' . implode(',', array_column(Subjects::cases(), 'value')),
-            // 'other_favorite_subjects' => 'nullable',
+            // CAREER ASPIRATION
+            'aspiration' => 'required|in:' . implode(',', array_column(CareerAspirations::cases(), 'value')),
+            'best_done_subjects' => 'required|array',
+            'best_done_subjects.*' => 'in:' . implode(',', array_column(Subjects::cases(), 'value')),
+            'worst_done_subjects' => 'required|array',
+            'worst_done_subjects.*' => 'in:' . implode(',', array_column(Subjects::cases(), 'value')),
+            'favorite_subjects' => 'required|array',
+            'favorite_subjects.*' => 'in:' . implode(',', array_column(Subjects::cases(), 'value')),
+
+            'additional_info' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -134,124 +135,154 @@ class StudentsController extends Controller
                 ->withErrors($validator->errors())
                 ->withInput();
         }
-        Log::info('VALIDATION PASSED');
 
+        Log::info('VALIDATION PASSED');
         $validated = $validator->validated();
-        $validated['password'] = Str::uuid();
-        // dd($validated);
 
         try {
             DB::beginTransaction();
 
-            $user = User::create($validated);
-            $validated['user_id'] = $user->id;
-            Log::info('ABOUT TO CREATE STUDENT');
+            // create user
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
 
-            $idPath = $request->file('id_image_path') ? $request->file('id_image_path')->store('identity', 'public') : null;
-            $identification_image = $request->file('identification_image') ? $request->file('identification_image')->store('profile', 'public') : null;
+            Log::info('USER CREATED', ['id' => $user->id, 'email' => $user->email]);
 
-            $plePath   = $request->hasFile('ple_file')   ? $request->file('ple_file')->store('academicFiles', 'public')   : null;
-            $oLevelPath = $request->hasFile('o_level_file') ? $request->file('o_level_file')->store('academicFiles', 'public') : null;
-            $otherPath = $request->hasFile('other_file') ? $request->file('other_file')->store('academicFiles', 'public') : null;
-            $medicalPath = $request->hasFile('files')     ? $request->file('files')->store('medicalFiles', 'public')      : null;
+            // handle files
+            $idPath = $request->hasFile('id_image_path')
+                ? $request->file('id_image_path')->store('identity', 'public')
+                : null;
 
-            $validated['citizenship']        = json_encode($validated['citizenship']);
-            $validated['spoken_languages']   = json_encode($validated['spoken_languages']);
-            $validated['best_done_subjects']   = json_encode($validated['best_done_subjects']);
-            $validated['worst_done_subjects']   = json_encode($validated['worst_done_subjects']);
-            $validated['favorite_subjects']   = json_encode($validated['favorite_subjects']);
-            $validated['additional_info']    = $validated['additional_info'] ?? null;
-            // $validated['admission_year'] = Carbon::createFromDate($validated['admission_year'], 1, 1);
+            $identification_image = $request->hasFile('identification_image')
+                ? $request->file('identification_image')->store('profile', 'public')
+                : null;
 
+            // encode array for json storage
+            $validated['citizenship'] = json_encode($validated['citizenship']);
+            $validated['spoken_languages'] = json_encode($validated['spoken_languages']);
+            $validated['best_done_subjects'] = json_encode($validated['best_done_subjects']);
+            $validated['worst_done_subjects'] = json_encode($validated['worst_done_subjects']);
+            $validated['favorite_subjects'] = json_encode($validated['favorite_subjects']);
+
+            // create student
             $student = students::create([
-                'user_id'               => $validated['user_id'],
-                'identification_image'  => $identification_image ?? null,
-                'admission_year'        => $validated['admission_year'],
-                'joining_class'         => $validated['joining_class'],
-                'first_name'            => $validated['first_name'],
-                'middle_name'           => $validated['middle_name']           ?? null,
-                'last_name'             => $validated['last_name'],
-                'dob'                   => $validated['dob'],
-                'gender'                => $validated['gender'],
-                'citizenship'           => $validated['citizenship'],
-                'id_type'               => $validated['id_type'],
-                'id_no'                 => $validated['id_no'],
-                'id_image_path'         => $idPath ?? null,
-                'a_level_combination'   => $validated['a_level_combination']   ?? null,
-                'applying_section'      => $validated['applying_section'],
+                'user_id' => $user->id,
+                'identification_image' => $identification_image ?? null,
+                'admission_year' => $validated['admission_year'],
+                'joining_class' => $validated['joining_class'],
+                'first_name' => $validated['first_name'],
+                'middle_name' => $validated['middle_name'] ?? null,
+                'last_name' => $validated['last_name'],
+                'dob' => $validated['dob'],
+                'gender' => $validated['gender'],
+                'citizenship' => $validated['citizenship'],
+                'id_type' => $validated['id_type'],
+                'id_no' => $validated['id_no'],
+                'id_image_path' => $idPath ?? null,
+                'a_level_combination' => $validated['a_level_combination'] ?? null,
+                'applying_section' => $validated['applying_section'],
                 'religious_affiliation' => $validated['religious_affiliation'],
-                'additional_info'       => $validated['additional_info']       ?? null,
-                'spoken_languages'      => $validated['spoken_languages'],
+                'additional_info' => $validated['additional_info'] ?? null,
+                'spoken_languages' => $validated['spoken_languages'],
             ]);
+
             Log::info('STUDENT CREATED', ['id' => $student->id]);
-            $validated['students_id'] = $student->id;
 
-            $academic = $request->input('academic_history.0');
-            AcademicHistory::create([
-                'students_id'      => $student->id,
-                'academic_level'  => $academic['academic_level'],
-                'school_name'     => $academic['school_name'],
-                'from_year'       => $academic['from_year'],
-                'to_year'         => $academic['to_year'],
-                'aggregate_score' => $academic['aggregate_score'],
-                'grade'           => $academic['grade'] ?? null,
-                'ple_file'        => $plePath  ?? null,
-                'o_level_file'    => $oLevelPath ?? null,
-                'other_file'      => $otherPath  ?? null,
-                'repeat_class'    => $academic['repeat_class'],
-                'repeated_class'  => $academic['repeated_class'],
-                'skip_class'     => $academic['skip_class'],
-                'skipped_class'  => $academic['skipped_class'],
+            // create academic histories
+            $academicHistories = $request->input('academic_history', []);
+            foreach ($academicHistories as $index => $academic) {
+                $academicFiles = $request->file("academic_history.{$index}") ?? [];
 
-            ]);
+                $plePath = isset($academicFiles['ple_file'])
+                    ? $academicFiles['ple_file']->store('academicFiles', 'public')
+                    : null;
+
+                $oLevelPath = isset($academicFiles['o_level_file'])
+                    ? $academicFiles['o_level_file']->store('academicFiles', 'public')
+                    : null;
+
+                $otherPath = isset($academicFiles['other_file'])
+                    ? $academicFiles['other_file']->store('academicFiles', 'public')
+                    : null;
+
+                AcademicHistory::create([
+                    'students_id' => $student->id,
+                    'academic_level' => $academic['academic_level'],
+                    'school_name' => $academic['school_name'],
+                    'from_year' => $academic['from_year'],
+                    'to_year' => $academic['to_year'],
+                    'aggregate_score' => $academic['aggregate_score'],
+                    'grade' => $academic['grade'] ?? null,
+                    'ple_file' => $plePath ?? null,
+                    'o_level_file' => $oLevelPath ?? null,
+                    'other_file' => $otherPath ?? null,
+                    'repeat_class' => $academic['repeat_class'] ?? 0,
+                    'repeated_class' => $academic['repeated_class'] ?? null,
+                    'skip_class' => $academic['skip_class'] ?? 0,
+                    'skipped_class' => $academic['skipped_class'] ?? null,
+                ]);
+            }
+
+            // Medical
+            $medicalPaths = [];
+            if ($request->hasFile('medical_files')) {
+                foreach ($request->file('medical_files') as $medicalFile) {
+                    $medicalPaths[] = $medicalFile->store('medicalFiles', 'public');
+                }
+            }
+
             MedicalHistory::create([
-                'students_id'        => $student->id,
+                'students_id' => $student->id,
                 'has_health_issues' => $validated['has_health_issues'] ?? 0,
-                'health_issues'     => $validated['health_issues']     ?? null,
-                'files'             => isset($medicalPath) ? json_encode([$medicalPath]) : null,
+                'health_issues' => $validated['health_issues'] ?? null,
+                'files' => !empty($medicalPaths) ? json_encode($medicalPaths) : null,
             ]);
+
+            // create discipline history
             DisciplineHistory::create([
-                'students_id'            => $student->id,
+                'students_id' => $student->id,
                 'has_disciplinary_issues' => $validated['has_disciplinary_issues'] ?? 0,
-                'disciplinary_issues'   => $validated['disciplinary_issues'],
-                'reason'                => $validated['reason'],
+                'disciplinary_issues' => $validated['disciplinary_issues'] ?? null,
+                'reason' => $validated['reason'] ?? null,
             ]);
+
+            // create career aspiration
             CareerAspiration::create([
-                'students_id'         => $student->id,
-                'aspiration'         => $validated['aspiration']         ?? null,
-                'best_done_subjects' => $validated['best_done_subjects'] ?? null,
-                // 'other_best_done_subjects' => $validated['other_best_done_subjects'] ?? null,
-                'worst_done_subjects' => $validated['worst_done_subjects'] ?? null,
-                // 'other_worst_done_subjects' => $validated['other_worst_done_subjects'] ?? null,
-                'favorite_subjects' => $validated['favorite_subjects'] ?? null,
-                // 'other_favorite_subjects' => $validated['other_favorite_subjects'] ?? null,
+                'students_id' => $student->id,
+                'aspiration' => $validated['aspiration'],
+                'best_done_subjects' => $validated['best_done_subjects'],
+                'worst_done_subjects' => $validated['worst_done_subjects'],
+                'favorite_subjects' => $validated['favorite_subjects'],
             ]);
 
             DB::commit();
+
             $user->syncRoles($validated['role']);
 
-            $token = Password::createToken($user);
+            // $token = Password::createToken($user);
             // $user->sendPasswordResetNotification($token);
 
             return redirect()->route('students.index')
-                ->with('success', 'Student created successfully.');
+                ->with('success', 'Student created successfully. Default password is "password"');
         } catch (\Throwable $th) {
-            Log::error('EXCEPTION INSIDE TRY', ['msg' => $th->getMessage(), 'trace' => $th->getTraceAsString()]);
-            DB::rollBack();
-            // return back()->with('error', 'An error occurred while creating the student: ' . $th->getMessage())->withInput();
-
-
-            $toDelete = array_filter([
-                $validated['id_image_path'] ?? null,
-                $validated['identification_image'] ?? null,
-                $validated['ple_file']          ?? null,
-                $validated['o_level_file']      ?? null,
-                $validated['other_file']        ?? null,
-                $validated['files']             ?? null,
+            Log::error('EXCEPTION INSIDE TRY', [
+                'msg' => $th->getMessage(),
+                'trace' => $th->getTraceAsString()
             ]);
-            Storage::delete($toDelete);
 
-            return back()->with('error', AppHelper::buildExceptionMessage($th->getMessage()))
+            DB::rollBack();
+            if (isset($idPath) && $idPath) {
+                Storage::disk('public')->delete($idPath);
+            }
+            if (isset($identification_image) && $identification_image) {
+                Storage::disk('public')->delete($identification_image);
+            }
+
+            return back()
+                ->with('error', AppHelper::buildExceptionMessage($th->getMessage()))
                 ->withInput();
         }
     }
@@ -298,85 +329,74 @@ class StudentsController extends Controller
             'student_id' => $student->id,
             'current_id_no' => $student->id_no,
             'request_id_no' => $request->id_no,
-            'are_they_same' => $student->id_no === $request->id_no
         ]);
-
 
         $validator = Validator::make($request->all(), [
 
+            'user_id' => 'nullable|exists:users,id',
+
             // STUDENT
-            'user_id' => 'required|exists:users,id',
-            'identification_image' => 'required',
-            'admission_year' => 'required',
-            'joining_class' => 'required',
-            'first_name' => 'required',
-            'middle_name' => 'nullable',
-            'last_name' => 'required',
+            'first_name' => 'required|string|max:100',
+            'middle_name' => 'nullable|string|max:100',
+            'last_name' => 'required|string|max:100',
             'dob' => 'required|date',
             'gender' => 'required|string|max:50',
             'citizenship' => 'required|array',
+            'religious_affiliation' => 'required|in:' . implode(',', array_column(ReligiousAffiliation::cases(), 'value')),
+            'spoken_languages' => 'required|array',
+
+
+            'admission_year' => 'required|integer',
+            'joining_class' => 'required|string|max:50',
+            'a_level_combination' => 'nullable|string|max:50',
+            'applying_section' => 'required|in:' . implode(',', array_column(ApplyingSection::cases(), 'value')),
             'id_type' => 'required|in:' . implode(',', array_column(IDType::cases(), 'value')),
             'id_no' => 'required|string|max:100|unique:students,id_no,' . $student->id,
             'id_image_path' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
-            'a_level_combination' => 'nullable',
-            'applying_section' => 'required|in:' . implode(',', array_column(ApplyingSection::cases(), 'value')),
-            'religious_affiliation' => 'required|in:' . implode(',', array_column(ReligiousAffiliation::cases(), 'value')),
-            'other_religious_affiliation' => 'nullable',
-            'additional_info' => 'nullable',
-            'spoken_languages' => 'required|array',
+            'identification_image' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
 
-            // ACADEMIC
+            // ACADEMIC HISTORY
             'academic_history' => 'required|array|min:1',
-            'academic_history.0.academic_level' => 'required|in:' . implode(',', array_column(AcademicLevel::cases(), 'value')),
-            'academic_history.0.school_name' => 'required|string|max:200',
-            'academic_history.0.from_year' => 'required|integer|min:1900|max:' . date('Y'),
-            'academic_history.0.to_year' => 'required|integer|min:1900|max:' . date('Y'),
-            'academic_history.0.aggregate_score' => 'required|numeric',
-            'academic_history.0.grade' => 'nullable',
+            'academic_history.*.academic_level' => 'required|in:' . implode(',', array_column(AcademicLevel::cases(), 'value')),
+            'academic_history.*.school_name' => 'required|string|max:200',
+            'academic_history.*.from_year' => 'required|integer',
+            'academic_history.*.to_year' => 'required|integer',
+            'academic_history.*.aggregate_score' => 'required|numeric',
+            'academic_history.*.grade' => 'nullable|string|max:50',
+            'academic_history.*.ple_file' => 'nullable|file|max:2048',
+            'academic_history.*.o_level_file' => 'nullable|file|max:2048',
+            'academic_history.*.other_file' => 'nullable|file|max:2048',
+            'academic_history.*.repeat_class' => 'nullable|boolean',
+            'academic_history.*.repeated_class' => 'nullable|string|max:50',
+            'academic_history.*.skip_class' => 'nullable|boolean',
+            'academic_history.*.skipped_class' => 'nullable|string|max:50',
 
-            'ple_file' => 'nullable|file|max:2048',
-            'o_level_file' => 'nullable|file|max:2048',
-            'other_file' => 'nullable|file|max:2048',
+            // MEDICAL HISTORY
+            'has_health_issues' => 'nullable|boolean',
+            'health_issues' => 'nullable|string',
+            'medical_files' => 'nullable|array',
+            'medical_files.*' => 'file|max:2048',
 
-            'academic_history.0.repeat_class' => 'boolean',
-            'academic_history.0.repeated_class' => 'nullable',
-            'academic_history.0.skip_class' => 'boolean',
-            'academic_history.0.skipped_class' => 'nullable',
-
-            //MEDICAL
-            'has_health_issues' => 'boolean',
-            'health_issues' => 'nullable',
-            'files' => 'nullable|file|max:2048',
-
-            //DISCIPLINE
-            'has_disciplinary_issues' => 'boolean',
+            // DISCIPLINE HISTORY
+            'has_disciplinary_issues' => 'nullable|boolean',
             'disciplinary_issues' => 'nullable|in:' . implode(',', array_column(DisciplineAction::cases(), 'value')),
-            'reason' => 'nullable',
+            'reason' => 'nullable|string',
 
-            //CAREER
-            'aspiration' => 'nullable|in:' . implode(',', array_column(CareerAspirations::cases(), 'value')),
-            'best_done_subjects' => 'required|array|in:' . implode(',', array_column(Subjects::cases(), 'value')),
-            'other_best_done_subjects' => 'nullable',
-            'worst_done_subjects' => 'required|array|in:' . implode(',', array_column(Subjects::cases(), 'value')),
-            'other_worst_done_subjects' => 'nullable',
-            'favorite_subjects' => 'required|array|in:' . implode(',', array_column(Subjects::cases(), 'value')),
-            'other_favorite_subjects' => 'nullable',
-        ]);
+            // CAREER ASPIRATION
+            'aspiration' => 'required|in:' . implode(',', array_column(CareerAspirations::cases(), 'value')),
+            'best_done_subjects' => 'required|array',
+            'worst_done_subjects' => 'required|array',
+            'favorite_subjects' => 'required|array',
 
-        Log::info('Validation Rule', [
-            'rule' => 'unique:students,id_no,' . $student->id
+            'additional_info' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             Log::warning('UPDATE VALIDATION FAILED', $validator->errors()->toArray());
-
-            Log::warning('Validation Details', [
-                'student_id' => $student->id,
-                'input_id_no' => $request->id_no,
-                'current_id_no' => $student->id_no
-            ]);
-
-            return back()->withErrors($validator)->withInput();
+            return back()
+                ->with('validation', 'Check the fields')
+                ->withErrors($validator->errors())
+                ->withInput();
         }
 
         $validated = $validator->validated();
@@ -384,35 +404,36 @@ class StudentsController extends Controller
         try {
             DB::beginTransaction();
 
+            // files
             if ($request->hasFile('id_image_path')) {
-                Storage::delete($student->id_image_path);
-                $validated['id_image_path'] = $request->file('id_image_path')->store('identity', 'public');
+                if ($student->id_image_path) {
+                    Storage::disk('public')->delete($student->id_image_path);
+                }
+                $idPath = $request->file('id_image_path')->store('identity', 'public');
+            } else {
+                $idPath = $student->id_image_path;
             }
+
             if ($request->hasFile('identification_image')) {
-                Storage::delete($student->identification_image);
-                $validated['identification_image'] = $request->file('identification_image')->store('profile', 'public');
+                if ($student->identification_image) {
+                    Storage::disk('public')->delete($student->identification_image);
+                }
+                $identification_image = $request->file('identification_image')->store('profile', 'public');
+            } else {
+                $identification_image = $student->identification_image;
             }
 
-            $plePath = $request->hasFile('ple_file')
-                ? $request->file('ple_file')->store('academicFiles', 'public')
-                : null;
+            // encode arrays for json storage
+            $validated['citizenship'] = json_encode($validated['citizenship']);
+            $validated['spoken_languages'] = json_encode($validated['spoken_languages']);
+            $validated['best_done_subjects'] = json_encode($validated['best_done_subjects']);
+            $validated['worst_done_subjects'] = json_encode($validated['worst_done_subjects']);
+            $validated['favorite_subjects'] = json_encode($validated['favorite_subjects']);
 
-            $oLevelPath = $request->hasFile('o_level_file')
-                ? $request->file('o_level_file')->store('academicFiles', 'public')
-                : null;
-
-            $otherPath = $request->hasFile('other_file')
-                ? $request->file('other_file')->store('academicFiles', 'public')
-                : null;
-
-            $medicalPath = $request->hasFile('files')
-                ? $request->file('files')->store('medicalFiles', 'public')
-                : null;
-
-            // STUDENT UPDATE
+            // UPDATE STUDENT
             $student->update([
-                'user_id' => $validated['user_id'],
-                'identification_image' => $validated['identification_image'],
+                'user_id' => $validated['user_id'] ?? $student->user_id,
+                'identification_image' => $identification_image,
                 'admission_year' => $validated['admission_year'],
                 'joining_class' => $validated['joining_class'],
                 'first_name' => $validated['first_name'],
@@ -420,62 +441,101 @@ class StudentsController extends Controller
                 'last_name' => $validated['last_name'],
                 'dob' => $validated['dob'],
                 'gender' => $validated['gender'],
-                'citizenship' => json_encode($validated['citizenship']),
+                'citizenship' => $validated['citizenship'],
                 'id_type' => $validated['id_type'],
                 'id_no' => $validated['id_no'],
+                'id_image_path' => $idPath,
                 'a_level_combination' => $validated['a_level_combination'] ?? null,
                 'applying_section' => $validated['applying_section'],
                 'religious_affiliation' => $validated['religious_affiliation'],
                 'additional_info' => $validated['additional_info'] ?? null,
-                'spoken_languages' => json_encode($validated['spoken_languages']),
-                'id_image_path' => $validated['id_image_path'] ?? $student->id_image_path,
+                'spoken_languages' => $validated['spoken_languages'],
             ]);
 
-            // ACADEMIC UPDATE
-            $academic = $student->academicHistories()->first();
-            $row = $validated['academic_history'][0];
+            Log::info('STUDENT UPDATED', ['id' => $student->id]);
 
-            $academic->update([
-                'academic_level' => $row['academic_level'],
-                'school_name' => $row['school_name'],
-                'from_year' => $row['from_year'],
-                'to_year' => $row['to_year'],
-                'aggregate_score' => $row['aggregate_score'],
-                'grade' => $row['grade'] ?? null,
-                'ple_file' => $plePath ?? $academic->ple_file,
-                'o_level_file' => $oLevelPath ?? $academic->o_level_file,
-                'other_file' => $otherPath ?? $academic->other_file,
-                'repeat_class'    => $row['repeat_class'],
-                'repeated_class'  => $row['repeated_class'],
-                'skip_class'     => $row['skip_class'],
-                'skipped_class'  => $row['skipped_class'],
-            ]);
+            // UPDATE ACADEMIC HISTORIES
+            $student->academicHistories()->delete();
 
-            // MEDICAL UPDATE
-            $student->medicalHistory()->update([
-                'has_health_issues' => $validated['has_health_issues'] ?? 0,
-                'health_issues' => $validated['health_issues'] ?? null,
-                'files' => $medicalPath ? json_encode([$medicalPath]) : $student->medicalHistory->files,
-            ]);
+            $academicHistories = $request->input('academic_history', []);
+            foreach ($academicHistories as $index => $academic) {
+                $academicFiles = $request->file("academic_history.{$index}") ?? [];
 
-            // DISCIPLINE UPDATE
-            $student->disciplineHistory()->update([
-                'has_disciplinary_issues' => $validated['has_disciplinary_issues'] ?? 0,
-                'disciplinary_issues' => $validated['disciplinary_issues'] ?? null,
-                'reason' => $validated['reason'] ?? null,
-            ]);
+                $plePath = isset($academicFiles['ple_file'])
+                    ? $academicFiles['ple_file']->store('academicFiles', 'public')
+                    : null;
 
-            // CAREER UPDATE
-            $student->careerAspiration()->update([
-                'aspiration' => $validated['aspiration'] ?? null,
+                $oLevelPath = isset($academicFiles['o_level_file'])
+                    ? $academicFiles['o_level_file']->store('academicFiles', 'public')
+                    : null;
 
-                'best_done_subjects' => $validated['best_done_subjects'] ?? null,
-                // 'other_best_done_subjects' => $validated['other_best_done_subjects'] ?? null,
-                'worst_done_subjects' => $validated['worst_done_subjects'] ?? null,
-                // 'other_worst_done_subjects' => $validated['other_worst_done_subjects'] ?? null,
-                'favorite_subjects' => $validated['favorite_subjects'] ?? null,
-                // 'other_favorite_subjects' => $validated['other_favorite_subjects'] ?? null,
-            ]);
+                $otherPath = isset($academicFiles['other_file'])
+                    ? $academicFiles['other_file']->store('academicFiles', 'public')
+                    : null;
+
+                AcademicHistory::create([
+                    'students_id' => $student->id,
+                    'academic_level' => $academic['academic_level'],
+                    'school_name' => $academic['school_name'],
+                    'from_year' => $academic['from_year'],
+                    'to_year' => $academic['to_year'],
+                    'aggregate_score' => $academic['aggregate_score'],
+                    'grade' => $academic['grade'] ?? null,
+                    'ple_file' => $plePath ?? null,
+                    'o_level_file' => $oLevelPath ?? null,
+                    'other_file' => $otherPath ?? null,
+                    'repeat_class' => $academic['repeat_class'] ?? 0,
+                    'repeated_class' => $academic['repeated_class'] ?? null,
+                    'skip_class' => $academic['skip_class'] ?? 0,
+                    'skipped_class' => $academic['skipped_class'] ?? null,
+                ]);
+            }
+
+            // Handle Medical
+            $medicalPaths = [];
+            if ($request->hasFile('medical_files')) {
+                $oldMedicalHistory = $student->medicalHistory;
+                if ($oldMedicalHistory && $oldMedicalHistory->files) {
+                    $oldFiles = json_decode($oldMedicalHistory->files, true) ?: [];
+                    foreach ($oldFiles as $oldFile) {
+                        Storage::disk('public')->delete($oldFile);
+                    }
+                }
+
+                foreach ($request->file('medical_files') as $medicalFile) {
+                    $medicalPaths[] = $medicalFile->store('medicalFiles', 'public');
+                }
+            }
+
+            MedicalHistory::updateOrCreate(
+                ['students_id' => $student->id],
+                [
+                    'has_health_issues' => $validated['has_health_issues'] ?? 0,
+                    'health_issues' => $validated['health_issues'] ?? null,
+                    'files' => !empty($medicalPaths) ? json_encode($medicalPaths) : ($student->medicalHistory->files ?? null),
+                ]
+            );
+
+
+            DisciplineHistory::updateOrCreate(
+                ['students_id' => $student->id],
+                [
+                    'has_disciplinary_issues' => $validated['has_disciplinary_issues'] ?? 0,
+                    'disciplinary_issues' => $validated['disciplinary_issues'] ?? null,
+                    'reason' => $validated['reason'] ?? null,
+                ]
+            );
+
+
+            CareerAspiration::updateOrCreate(
+                ['students_id' => $student->id],
+                [
+                    'aspiration' => $validated['aspiration'],
+                    'best_done_subjects' => $validated['best_done_subjects'],
+                    'worst_done_subjects' => $validated['worst_done_subjects'],
+                    'favorite_subjects' => $validated['favorite_subjects'],
+                ]
+            );
 
             DB::commit();
 
@@ -485,7 +545,8 @@ class StudentsController extends Controller
             DB::rollBack();
             Log::error('UPDATE FAILED', ['msg' => $th->getMessage()]);
 
-            return back()->with('error', AppHelper::buildExceptionMessage($th->getMessage()))
+            return back()
+                ->with('error', AppHelper::buildExceptionMessage($th->getMessage()))
                 ->withInput();
         }
     }
@@ -499,4 +560,11 @@ class StudentsController extends Controller
         $students->delete();
         return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
     }
+
+    // StudentController.php
+    // public function print(students $student)
+    // {
+    //     $student->load(['user', 'academicHistories', 'medicalHistory', 'disciplineHistory', 'careerAspiration']);
+    //     return view('students.print', compact('student'));
+    // }
 }
