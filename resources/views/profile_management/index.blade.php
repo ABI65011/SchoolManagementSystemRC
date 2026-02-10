@@ -1,8 +1,25 @@
 @extends('layouts.main')
+@section('header')
+    <style>
+        @media print {
+            .no-print {
+                display: none !important;
+            }
 
+            .card {
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+            }
+
+            .badge {
+                border: 1px solid #888;
+            }
+        }
+    </style>
+@endsection
 @section('content')
 
-    <div class="container-fluid py-5">
+    <div class="container-fluid py-5" id="print-area">
         <div class="row">
             <div class="col-lg-4">
                 <div class="card mb-4">
@@ -14,10 +31,11 @@
                         </h5>
 
                         <p class="text-muted mb-1">{{ $student->user->role ?? 'Student' }}</p>
-                        <div class="d-flex justify-content-center mb-2">
+                        <div class="d-flex justify-content-center mb-2 no-print">
                             <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-success"><a
                                     href="{{ route('students.edit', $student) }}"
                                     class="text-white text-decoration-none">Edit Profile</a></button>
+                            <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-warning ms-3" onclick="printProfile()">Print Profile</button>
                         </div>
                     </div>
                 </div>
@@ -212,7 +230,7 @@
                         </div>{{-- row --}}
 
                         @if ($student->id_image_path)
-                            <div class="d-flex justify-content-end mt-3">
+                            <div class="d-flex justify-content-end mt-3 no-print">
                                 <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
                                     data-bs-target="#idModal">
                                     <i class="bi bi-eye me-1"></i> View ID
@@ -263,7 +281,7 @@
                                             ];
                                         @endphp
                                         @if (array_filter($files))
-                                            <div class="dropstart">
+                                            <div class="dropstart no-print">
                                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown"
                                                     aria-expanded="false">
                                                     <i class="bi bi-paperclip"></i>
@@ -298,7 +316,6 @@
                                     @endif
                                     @empty
                                         <p class="text-muted mb-0">No academic history recorded</p>
-                                    @endempty
                                 @endforelse
                             </div>
 
@@ -512,5 +529,14 @@
                 } [m]));
             }
         });
+    </script>
+    <script>
+        function printProfile() {
+            let printContents = document.getElementById("print-area").innerHTML;
+            let originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
     </script>
 @endsection
