@@ -36,6 +36,19 @@
                         <p>Students</p>
                     </a>
                 </li>
+                {{-- <li class="nav-item">
+                    <a href="{{ route('staff.index') }}"
+                        class="nav-link  {{ request()->routeIs('staff.*') ? 'active' : '' }}">
+                        <i class="bi bi-person-rolodex"></i>
+                        <p>Staff</p>
+                    </a>
+                </li> --}}
+                <li class="nav-item">
+                    <a href="{{ route('holiday-calendars.index') }}"
+                        class="nav-link  {{ request()->routeIs('holiday-calendars.*') ? 'active' : '' }}">
+                        <i class="bi bi-calendar"></i>
+                        <p>Holiday Calendar</p>
+                    </a>
                 {{-- <li class="nav-item {{ Request::is('reports*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Request::is('reports*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-file-alt"></i>

@@ -51,4 +51,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(students::class, 'user_id', 'id');
     }
+    public function staff()
+    {
+        return $this->hasOne(staff::class, 'user_id', 'id');
+    }
 }

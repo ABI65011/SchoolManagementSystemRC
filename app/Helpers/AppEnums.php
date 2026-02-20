@@ -92,3 +92,45 @@ enum Subjects: string
     case Divinity = "Divinity";
     case Other = "Other";
 }
+
+enum AttendanceStatus: string
+{
+    case Present = 'present';
+    case Absent = 'absent';
+    case Late = 'late';
+    case Half_Day = 'half_day';
+    case On_Leave = 'on_leave';
+    case Holiday = 'holiday';
+    case Weekend = 'weekend';
+    case Remote = 'remote';
+    case Field_Duty = 'field_duty';
+}
+
+enum CheckInMethod: string
+{
+    case BIOMETRIC = 'biometric';
+    case RFID = 'rfid';
+    case MOBILE_APP = 'mobile_app';
+    case WEB_PORTAL = 'web_portal';
+    case MANUAL = 'manual';
+    case AUTO = 'auto';
+}
+
+
+enum HolidayType: string
+{
+    case Public = 'Public Holiday';
+    case School = 'School Holiday';
+    case Religious = 'Religious Holiday';
+    case National = 'National Holiday';
+    case Other = 'Other Holiday';
+}
+
+enum RecurringPattern: string
+{
+    case Yearly = 'Yearly';
+    case Easter_Based = 'Easter Based';
+    case Hijri = 'Hijri';
+    case Floating = 'Floating';
+    case None = 'None';
+}
