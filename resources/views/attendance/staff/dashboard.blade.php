@@ -175,7 +175,7 @@
 
 @section('javascript')
 <script>
-    // Handle check-out geolocation
+    
     document.getElementById('checkoutBtn')?.addEventListener('click', function(e) {
         e.preventDefault();
         const statusDiv = document.getElementById('locationStatus');

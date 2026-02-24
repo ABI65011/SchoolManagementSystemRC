@@ -89,7 +89,7 @@
         const radius = {{ $location->geofence_radius }};
 
         function calculateDistance(lat1, lng1, lat2, lng2) {
-            const R = 6371000; // Earth's radius in meters
+            const R = 6371000;
             const φ1 = lat1 * Math.PI / 180;
             const φ2 = lat2 * Math.PI / 180;
             const Δφ = (lat2 - lat1) * Math.PI / 180;
@@ -100,7 +100,7 @@
                 Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-            return R * c; // Distance in meters
+            return R * c;
         }
 
         function initLocation() {
@@ -119,13 +119,13 @@
                     document.getElementById('lngInput').value = userLng;
 
                     if (distance <= radius) {
-                        // Inside geofence
+
                         document.getElementById('loadingState').style.display = 'none';
                         document.getElementById('successState').style.display = 'block';
                         document.getElementById('locationCoords').textContent =
                             `${userLat.toFixed(6)}, ${userLng.toFixed(6)}`;
                     } else {
-                        // Outside geofence
+
                         document.getElementById('loadingState').style.display = 'none';
                         document.getElementById('outsideState').style.display = 'block';
                         document.getElementById('distanceAway').textContent = Math.round(distance);
@@ -162,7 +162,7 @@
             document.getElementById('errorMessage').textContent = message;
         }
 
-        // Start location detection on page load
+        
         window.onload = initLocation;
     </script>
 @endsection

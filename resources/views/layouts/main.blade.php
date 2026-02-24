@@ -3,6 +3,7 @@
 <!--begin::Head-->
 
 {{-- Extra line here😌 --}}
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>{{ config('app.name') }} | @yield('title', 'App')</title>
@@ -41,6 +42,7 @@
             <div class="app-content">
                 <!--begin::Container-->
                 <div class="container-fluid">
+                    @include('includes.toast')
                     @yield('content')
                 </div>
                 <!--end::Container-->
@@ -66,6 +68,19 @@
             $('.select2bs4').select2({
                 theme: 'bootstrap4'
             })
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            var toastElements = document.querySelectorAll('.toast');
+            toastElements.forEach(function(toastEl) {
+                var toast = new bootstrap.Toast(toastEl, {
+                    delay: 5000,
+                    autohide: true
+                });
+                toast.show();
+            });
         });
     </script>
     @include('includes.javascript')
