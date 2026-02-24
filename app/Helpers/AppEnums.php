@@ -104,18 +104,15 @@ enum AttendanceStatus: string
     case Weekend = 'weekend';
     case Remote = 'remote';
     case Field_Duty = 'field_duty';
+    case Incomplete = 'incomplete';
 }
 
 enum CheckInMethod: string
 {
-    case BIOMETRIC = 'biometric';
-    case RFID = 'rfid';
-    case MOBILE_APP = 'mobile_app';
-    case WEB_PORTAL = 'web_portal';
-    case MANUAL = 'manual';
-    case AUTO = 'auto';
+    case Magic_Link = 'magic_link';
+    case Manual = 'manual';
+    case Admin_override = 'admin_override';
 }
-
 
 enum HolidayType: string
 {

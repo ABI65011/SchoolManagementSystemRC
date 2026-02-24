@@ -16,21 +16,21 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(staff::class, 'staff_id');
+            $table->foreignId('staff_id')->constrained('staff')->onDelete('cascade');
             $table->date('attendance_date');
             $table->dateTime('check_in');
             $table->dateTime('check_out')->nullable();
             $table->enum('check_in_method', array_column(CheckInMethod::cases(), 'value'));
             $table->enum('check_out_method', array_column(CheckInMethod::cases(), 'value'));
-            $table->string('check_in_location');
-            $table->string('check_out_location');
+            $table->string('check_in_location')->nullable();
+            $table->string('check_out_location')->nullable();
             $table->enum('status', array_column(AttendanceStatus::cases(), 'value'));
-            $table->integer('late_minutes');
-            $table->integer('early_departure_minutes');
-            $table->decimal('working_hours', 4, 2);
+            $table->integer('late_minutes')->nullable();
+            $table->integer('early_departure_minutes')->nullable();
+            $table->decimal('working_hours', 4, 2)->nullable();
             $table->boolean('is_holiday');
             $table->boolean('is_weekend');
-            $table->decimal('overtime_hours', 4, 2);
+            $table->decimal('overtime_hours', 4, 2)->nullable();
             $table->string('notes')->nullable();
             $table->timestamps();
         });

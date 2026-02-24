@@ -27,3 +27,4 @@ Thumbs.db
 /database/migrations/2026_02_11_105316_create_staff_table.php
 /app/Http/Controllers/StaffController.php
 /resources/views/my-tests
+/app/Http/Controllers/AuthController.php
