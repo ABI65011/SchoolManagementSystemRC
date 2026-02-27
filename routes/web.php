@@ -8,6 +8,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocViewerController;
 use App\Http\Controllers\HolidayCalendarController;
+use App\Http\Controllers\LeaveApplicationController;
+use App\Http\Controllers\LeaveApprovalController;
+use App\Http\Controllers\LeaveReportController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentsController;
 use Illuminate\Support\Facades\Route;
@@ -30,9 +33,37 @@ Route::middleware('auth', 'auth.session')->group(function () {
     });
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::get('/test-form', function () {
-        return view('my-tests.formtest');
-    })->name('test-form');
+    // Route::get('/test-form', function () {
+    //     return view('my-tests.formtest');
+    // })->name('test-form');
+
+    Route::controller(LeaveApplicationController::class)->group(function () {
+        Route::get('/leave-applications', 'index')->name('leave.applications.index');
+        Route::get('/leave-application/add', 'create')->name('leave.application.create');
+        Route::post('/leave-application/save', 'store')->name('leave.application.store');
+        Route::get('/leave-application/{leave_application}', 'show')->name('leave.application.show');
+        Route::get('/leave-application/edit/{leave_application}', 'edit')->name('leave.application.edit');
+        Route::put('/leave-application/update/{leave_application}', 'update')->name('leave.application.update');
+        Route::delete('/leave-application/destroy/{leave_application}', 'destroy')->name('leave.application.destroy');
+        Route::post('/leave-application/{application}/replacement-response', 'replacementRespond')
+            ->name('leave.replacement.respond');
+    });
+
+    Route::prefix('leave-reports')->name('leave.reports.')->group(function () {
+        Route::get('/',           [LeaveReportController::class, 'index'])->name('index');
+        Route::get('/pending',    [LeaveReportController::class, 'pending'])->name('pending');
+        Route::get('/approved',   [LeaveReportController::class, 'approved'])->name('approved');
+        Route::get('/rejected',   [LeaveReportController::class, 'rejected'])->name('rejected');
+    });
+
+    Route::get('leave-approvals/{approval}/approve', [LeaveApprovalController::class, 'approveForm'])->name('leave.approvals.form');
+    Route::get('leave-approvals/{application}/approve/new', [LeaveApprovalController::class, 'approveFormNew'])->name('leave.approvals.form.new');
+    Route::post('leave-approvals/{approval}/approve', [LeaveApprovalController::class, 'approve'])->name('leave.approvals.submit');
+
+    Route::post('/dismiss-replacement-toast/{application}', function ($applicationId) {
+        session()->put('replacement_toast_dismissed_' . $applicationId, true);
+        return response()->json(['success' => true]);
+    })->name('dismiss.replacement.toast');
 
     //  Student Management Routes -->
     Route::controller(StudentsController::class)->group(function () {

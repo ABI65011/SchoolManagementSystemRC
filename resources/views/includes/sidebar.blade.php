@@ -51,29 +51,35 @@
                     </a>
                 </li>
                 @hasanyrole('Admin|Super')
-                <li class="nav-item">
-                    <a href="{{ route('holiday-calendars.index') }}"
-                        class="nav-link  {{ request()->routeIs('holiday-calendars.*') ? 'active' : '' }}">
-                        <i class="bi bi-calendar"></i>
-                        <p>Holiday Calendar</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.attendance.index') }}"
-                        class="nav-link  {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}">
-                        <i class="bi bi-person"></i>
-                        <p>Admin Attendance</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.attendance.location.index') }}"
-                        class="nav-link  {{ request()->routeIs('admin.attendance.location.*') ? 'active' : '' }}">
-                        <i class="bi bi-map"></i>
-                        <p>Attendance Location</p>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{{ route('holiday-calendars.index') }}"
+                            class="nav-link  {{ request()->routeIs('holiday-calendars.*') ? 'active' : '' }}">
+                            <i class="bi bi-calendar"></i>
+                            <p>Holiday Calendar</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.attendance.index') }}"
+                            class="nav-link  {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}">
+                            <i class="bi bi-person"></i>
+                            <p>Admin Attendance</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.attendance.location.index') }}"
+                            class="nav-link  {{ request()->routeIs('admin.attendance.location.*') ? 'active' : '' }}">
+                            <i class="bi bi-map"></i>
+                            <p>Attendance Location</p>
+                        </a>
+                    </li>
                 @endhasanyrole
-
+                <li class="nav-item">
+                    <a href="{{ route('leave.applications.index') }}"
+                        class="nav-link  {{ request()->routeIs('leave.applications.*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-alt fa-fw "></i>
+                        <p>Leave Application</p>
+                    </a>
+                </li>
                 {{-- <li class="nav-item {{ Request::is('reports*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Request::is('reports*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-file-alt"></i>

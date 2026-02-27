@@ -83,6 +83,29 @@
             });
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            var toastList = toastElList.map(function(toastEl) {
+                return new bootstrap.Toast(toastEl, {
+                    autohide: toastEl.dataset.bsAutohide !== 'false',
+                    delay: 5000
+                });
+            });
+            toastList.forEach(toast => toast.show());
+        });
+
+        function dismissReplacementToast(applicationId) {
+            
+            fetch('/dismiss-replacement-toast/' + applicationId, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            });
+            bootstrap.Toast.getInstance(document.getElementById('toastReplacement')).hide();
+        }
+    </script>
     @include('includes.javascript')
     @yield('javascript')
 </body>

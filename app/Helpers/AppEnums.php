@@ -10,6 +10,7 @@ enum UserRoles: string
     case Student = "Student";
     case Parent = "Parent";
     case User = "User";
+    case HR = "HR";
 }
 
 enum Gender: string
@@ -130,4 +131,39 @@ enum RecurringPattern: string
     case Hijri = 'Hijri';
     case Floating = 'Floating';
     case None = 'None';
+}
+
+enum LeaveType: string
+{
+    case Annual = "Annual";
+    case Sick = "Sick";
+    case Maternity = "Maternity";
+    case Paternity = "Paternity";
+    case Study = "Study";
+    case Jury = "Jury";
+    case Bereavement = "Bereavement";
+}
+
+enum LeaveStatus: string
+{
+    case Pending = "Pending";
+    case Fully_Approved = "Fully Approved";
+    case Rejected = "Rejected";
+    case Partial = "Partial";
+    case Awaiting_Replacement_Confirmation = "Awaiting Replacement Confirmation";
+    case Replacement_Rejected = "Replacement Rejected";
+}
+
+enum ReplacementStatus: string
+{
+    case Pending = "Pending";
+    case Accepted = "Accepted";
+    case Rejected = "Rejected";
+}
+
+enum LeaveAction: string
+{
+    case Approved = "Approved";
+    case Rejected = "Rejected";
+    case Pending = "Pending";
 }
