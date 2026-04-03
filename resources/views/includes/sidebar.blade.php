@@ -36,18 +36,93 @@
                         <p>Students</p>
                     </a>
                 </li>
-                {{-- <li class="nav-item">
+                <li class="nav-item">
                     <a href="{{ route('staff.index') }}"
                         class="nav-link  {{ request()->routeIs('staff.*') ? 'active' : '' }}">
                         <i class="bi bi-person-rolodex"></i>
                         <p>Staff</p>
                     </a>
-                </li> --}}
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admissions.index') }}"
+                        class="nav-link  {{ request()->routeIs('admissions.*') ? 'active' : '' }}">
+                        <i class="fas fa-door-open"></i>
+                        <p>Admissions</p>
+                    </a>
+                </li>
+
+                <li class="nav-item {{ request()->routeIs('exam-categories.*','exams.*','exam-results.*') ? 'menu-open' : '' }}">
+                    <a href="#"
+                        class="nav-link  {{ request()->routeIs('exam-categories.*','exams.*','exam-results.*') ? 'active' : '' }}">
+                        <i class="bi bi-mortarboard-fill"></i>
+                        <p>Exam Setup
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route(name: 'exam-categories.index') }}"
+                                class="nav-link  {{ request()->routeIs('exam-categories.*') ? 'active' : '' }}">
+                                <i class="bi bi-mortarboard-fill"></i>
+                                <p>Exam Categories</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route(name: 'exams.index') }}"
+                                class="nav-link  {{ request()->routeIs('exams.*') ? 'active' : '' }}">
+                                <i class="bi bi-mortarboard-fill"></i>
+                                <p>Exams</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route(name: 'exam-results.index') }}"
+                                class="nav-link  {{ request()->routeIs('exam-results.*') ? 'active' : '' }}">
+                                <i class="bi bi-mortarboard-fill"></i>
+                                <p>Exam Results</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route(name: 'grading-scales.index') }}"
+                        class="nav-link  {{ request()->routeIs('grading-scales.*') ? 'active' : '' }}">
+                        <i class="fas fa-balance-scale"></i>
+                        <p>Grading Scales</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route(name: 'report-cards.index') }}"
+                        class="nav-link  {{ request()->routeIs('report-cards.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        <p>Report Cards</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route(name: 'continuous-assessments.index') }}"
+                        class="nav-link  {{ request()->routeIs('continuous-assessments.*') ? 'active' : '' }}">
+                        <i class="fas fa-chart-line"></i>
+                        <p>Continuous Assessments</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route(name: 'subjects.index') }}"
+                        class="nav-link  {{ request()->routeIs('subjects.*') ? 'active' : '' }}">
+                        <i class="bi bi-book"></i>
+                        <p>Subjects</p>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="{{ route('attendance.dashboard') }}"
                         class="nav-link  {{ request()->routeIs('attendance.dashboard') ? 'active' : '' }}">
                         <i class="bi bi-people"></i>
                         <p>Attendance Dashboard</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('student-attendance.index') }}"
+                        class="nav-link  {{ request()->routeIs('student-attendance.') ? 'active' : '' }}">
+                        <i class="bi bi-people"></i>
+                        <p>Student Attendance</p>
                     </a>
                 </li>
                 @hasanyrole('Admin|Super')

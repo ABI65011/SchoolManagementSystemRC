@@ -30,6 +30,6 @@ class AcademicHistory extends Model
 
     public function student()
     {
-        return $this->belongsTo(students::class, 'students_id');
+        return $this->belongsTo(Student::class, 'students_id');
     }
 }

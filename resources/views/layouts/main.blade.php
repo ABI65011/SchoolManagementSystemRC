@@ -42,7 +42,7 @@
             <div class="app-content">
                 <!--begin::Container-->
                 <div class="container-fluid">
-                    @include('includes.toast')
+                    {{-- @include('includes.toast') --}}
                     @yield('content')
                 </div>
                 <!--end::Container-->
@@ -96,7 +96,7 @@
         });
 
         function dismissReplacementToast(applicationId) {
-            
+
             fetch('/dismiss-replacement-toast/' + applicationId, {
                 method: 'POST',
                 headers: {

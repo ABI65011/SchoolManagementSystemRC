@@ -2,10 +2,15 @@
 
 namespace App\Providers;
 
+use App\Models\Exam;
+use App\Policies\ExamPolicy;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    protected $policies = [
+        Exam::class => ExamPolicy::class,
+    ];
     /**
      * Register any application services.
      */

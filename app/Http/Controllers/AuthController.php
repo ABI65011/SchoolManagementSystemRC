@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AppHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -25,15 +27,18 @@ class AuthController extends Controller
                 ->withErrors($validator->errors())->onlyInput('email');
         }
 
+        Log::info('VALIDATION PASSED');
         $validated = $validator->validated();
 
         if (Auth::attempt($validated, true)) {
             $request->session()->regenerate();
             return  redirect()->intended();
         }
-
+        Log::error('AUTHENTICATION FAILED', ['email' => $request->email]);
         return back()->with('error', 'Invalid credentials')->onlyInput('email');
     }
+
+
     public function logout(Request $request)
     {
         Auth::logout();

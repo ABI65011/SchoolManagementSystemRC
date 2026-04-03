@@ -65,8 +65,7 @@
                     <div class="col-md-6">
                         <label>Account Name (Not editable)</label>
                         <input type="text" id="preview_name" class="form-control" readonly
-                            placeholder="Will be generated from names below"
-                            style="background-color: #e9ecef;">
+                            placeholder="Will be generated from names below" style="background-color: #e9ecef;">
                         <small class="form-text text-muted">Generated from First Name & Last Name</small>
                     </div>
                 </div>
@@ -115,7 +114,8 @@
                         <select name="citizenship[]" class="form-select select2-multiple" multiple required>
                             @php
                                 $studentCitizenship = $isEdit
-                                    ? (json_decode($student->citizenship ?? '[]', true) ?: [])
+                                    ? (json_decode($student->citizenship ?? '[]', true) ?:
+                                    [])
                                     : [];
                                 $oldCitizenship = old('citizenship', $studentCitizenship);
                             @endphp
@@ -146,7 +146,8 @@
                         <select name="spoken_languages[]" class="form-select select2-multiple" multiple required>
                             @php
                                 $studentLanguages = $isEdit
-                                    ? (json_decode($student->spoken_languages ?? '[]', true) ?: [])
+                                    ? (json_decode($student->spoken_languages ?? '[]', true) ?:
+                                    [])
                                     : [];
                                 $oldLanguages = old('spoken_languages', $studentLanguages);
                             @endphp
@@ -181,9 +182,15 @@
                     </div>
                     <div class="col-md-3">
                         <label class="required-field">Joining Class</label>
-                        <input type="text" name="joining_class"
+                        {{-- <input type="text" name="joining_class"
                             value="{{ old('joining_class', $isEdit ? $student->joining_class : '') }}"
-                            class="form-control" placeholder="e.g. S.1" required>
+                            class="form-control" placeholder="e.g. S.1" required> --}}
+                        <select name="joining_class" id="joining_class" class="form-select" required>
+                            <option value="">-- Select Joining Class</option>
+                            @foreach (array_column(\App\Helpers\Classes::cases(), 'value') as $c)
+                            <option value="{{ $c }}" {{ old('joining_class', $isEdit ? $student->joining_class : '') == $c ? 'selected' : '' }}>{{ $c }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-md-3">
                         <label>A-Level Combination</label>
@@ -221,8 +228,7 @@
                     <div class="col-md-6">
                         <label class="required-field">ID No</label>
                         <input type="text" name="id_no"
-                            value="{{ old('id_no', $isEdit ? $student->id_no : '') }}"
-                            class="form-control" required>
+                            value="{{ old('id_no', $isEdit ? $student->id_no : '') }}" class="form-control" required>
                     </div>
                 </div>
 
@@ -234,15 +240,16 @@
                         @if ($isEdit && $student->id_image_path)
                             <div class="mt-2">
                                 <p class="file-preview">Current ID Image:</p>
-                                <img src="{{ asset('storage/' . $student->id_image_path) }}"
-                                    alt="Current ID Image" class="current-id-image">
+                                <img src="{{ asset('storage/' . $student->id_image_path) }}" alt="Current ID Image"
+                                    class="current-id-image">
                                 <p class="file-preview">Leave empty to keep current image</p>
                             </div>
                         @endif
                         <small class="form-text text-muted">Accepted formats: JPG, PNG, GIF. Max size: 2MB</small>
                     </div>
                     <div class="col-md-6">
-                        <label class="{{ $isEdit ? '' : 'required-field' }}">Upload an Identification Image (≤2 MB)</label>
+                        <label class="{{ $isEdit ? '' : 'required-field' }}">Upload an Identification Image (≤2
+                            MB)</label>
                         <input type="file" name="identification_image" class="form-control" accept="image/*"
                             {{ $isEdit ? '' : 'required' }}>
                         @if ($isEdit && $student->identification_image)
@@ -575,7 +582,8 @@
                             <div class="mb-3">
                                 <label>Upload Medical Reports</label>
                                 <input type="file" name="medical_files[]" multiple class="form-control">
-                                <small class="form-text text-muted">You can upload multiple files (PDF, JPG, PNG)</small>
+                                <small class="form-text text-muted">You can upload multiple files (PDF, JPG,
+                                    PNG)</small>
                                 @if ($isEdit && $medicalHistory && $medicalHistory->files)
                                     @php
                                         $files = json_decode($medicalHistory->files, true) ?: [];

@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\ApplyingSection;
+use App\Helpers\Classes;
 use App\Helpers\Gender;
 use App\Helpers\IDType;
 use App\Helpers\ReligiousAffiliation;
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'user_id')->constrained()->onDelete('cascade');
             $table->string('identification_image');
             $table->year('admission_year');
-            $table->string('joining_class');
+            $table->enum('joining_class', array_column(Classes::cases(), 'value'));
             $table->string('first_name');
             $table->string('middle_name')->nullable();
             $table->string('last_name');

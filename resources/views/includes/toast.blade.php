@@ -1,17 +1,8 @@
-{{-- Add this temporarily at the top of toast.blade.php to debug --}}
+{{-- Add this temporarily at the top of toast.blade.php to debug
 @php
     $userStaffId = auth()->user()->staff?->id;
     $replacementKey = 'replacement_notification_' . $userStaffId;
     $allSession = session()->all();
-
-    // Log to see what's happening
-\Illuminate\Support\Facades\Log::info('Toast Debug', [
-    'user_staff_id' => $userStaffId,
-    'replacement_key' => $replacementKey,
-    'session_has_key' => session()->has($replacementKey),
-    'all_session_keys' => array_keys($allSession),
-    'replacement_toast_data' => session($replacementKey),
-    ]);
 @endphp
 
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
@@ -89,4 +80,4 @@
         </div>
     @endif
 
-</div>
+</div> --}}

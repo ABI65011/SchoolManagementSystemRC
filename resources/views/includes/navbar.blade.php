@@ -105,30 +105,45 @@
             </li>
             <!--end::Messages Dropdown Menu-->
             <!--begin::Notifications Dropdown Menu-->
+            @php
+                $userStaffId = auth()->user()->staff?->id;
+                $replacementKey = 'replacement_notification_' . $userStaffId;
+                $allSession = session()->all();
+                $pendingReplacement = \App\Models\leave_application::where(
+                    'replacement_employee_id',
+                    auth()->user()->staff?->id,
+                )
+                    ->where('replacement_status', \App\Helpers\ReplacementStatus::Pending->value)
+                    ->with('employee.user')
+                    ->latest()
+                    ->first();
+                $notificationCount = $pendingReplacement ? 1 : 0;
+            @endphp
             <li class="nav-item dropdown">
                 <a class="nav-link" data-bs-toggle="dropdown" href="#">
                     <i class="bi bi-bell-fill"></i>
-                    <span class="navbar-badge badge text-bg-warning">15</span>
+                    @if ($notificationCount > 0)
+                        <span class="navbar-badge badge text-bg-warning">{{ $notificationCount }}</span>
+                    @endif
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                    <span class="dropdown-item dropdown-header">15 Notifications</span>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <i class="bi bi-envelope me-2"></i> 4 new messages
-                        <span class="float-end text-secondary fs-7">3 mins</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <i class="bi bi-people-fill me-2"></i> 8 friend requests
-                        <span class="float-end text-secondary fs-7">12 hours</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <i class="bi bi-file-earmark-fill me-2"></i> 3 new reports
-                        <span class="float-end text-secondary fs-7">2 days</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item dropdown-footer"> See All Notifications </a>
+                    <span class="dropdown-item dropdown-header">{{ $notificationCount }} Notifications</span>
+                    @if ($pendingReplacement)
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ route('leave.applications.index') }}" class="dropdown-item">
+                            <i class="bi bi-envelope me-2"></i>
+                            <strong>Replacement Request</strong>
+                            <div class="text-secondary fs-7 ps-4">
+                                Cover for {{ $pendingReplacement->employee->user->name }}
+                            </div>
+                            <div class="text-secondary fs-7 ps-4 italic">
+                                {{ $pendingReplacement->start_date?->format('d M') }} -
+                                {{ $pendingReplacement->end_date?->format('d M') }}
+                            </div>
+                        </a>
+                    @else
+                        <p class="dropdown-item text-center text-muted small">No new notifications</p>
+                    @endif
                 </div>
             </li>
             <!--end::Notifications Dropdown Menu-->

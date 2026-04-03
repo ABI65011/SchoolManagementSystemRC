@@ -59,17 +59,17 @@
                     </div>
 
                     <div class="card-body table-responsive p-0">
-                        <table class="table table-hover text-nowrap">
-                            <thead class="table-light">
+                        <table class="table table-striped table-hover">
+                            <thead>
                                 <tr>
-                                    <th style="width: 5%">#</th>
-                                    <th style="width: 15%">Employee</th>
-                                    <th style="width: 15%">Supervisor</th>
-                                    <th style="width: 10%">Type</th>
-                                    <th style="width: 15%">Dates</th>
-                                    <th style="width: 10%">Status</th>
-                                    <th style="width: 15%">Replacement</th>
-                                    <th style="width: 15%">Actions</th>
+                                    <th>#</th>
+                                    <th>Employee</th>
+                                    <th>Supervisor</th>
+                                    <th>Type</th>
+                                    <th>Dates</th>
+                                    <th>Status</th>
+                                    <th>Replacement</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>

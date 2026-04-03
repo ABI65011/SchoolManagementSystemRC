@@ -14,12 +14,14 @@ use App\Helpers\Subjects;
 use App\Helpers\UserRoles;
 use App\Models\AcademicHistory;
 use App\Models\CareerAspiration;
+use App\Models\Classes;
 use App\Models\DisciplineHistory;
 use App\Models\MedicalHistory;
-use App\Models\students;
+use App\Models\Student;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -36,7 +38,7 @@ class StudentsController extends Controller
      */
     public function index()
     {
-        $students = students::with(['user', 'academicHistories', 'disciplineHistory', 'medicalHistory', 'careerAspiration'])->paginate(10);
+        $students = Student::with(['user', 'academicHistories', 'disciplineHistory', 'medicalHistory', 'careerAspiration'])->paginate(10);
         return view('students.index', compact('students'));
     }
 
@@ -168,7 +170,7 @@ class StudentsController extends Controller
             $validated['favorite_subjects'] = json_encode($validated['favorite_subjects']);
 
             // create student
-            $student = students::create([
+            $student = Student::create([
                 'user_id' => $user->id,
                 'identification_image' => $identification_image ?? null,
                 'admission_year' => $validated['admission_year'],
@@ -290,7 +292,7 @@ class StudentsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(students $student)
+    public function show(Student $student)
     {
         $users = User::whereHas('student')->get();
         $student->load([
@@ -306,7 +308,7 @@ class StudentsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(students $student)
+    public function edit(Student $student)
     {
         $users = User::whereHas('student')->get();
         $student->load([
@@ -322,7 +324,7 @@ class StudentsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, students $student)
+    public function update(Request $request, Student $student)
     {
         Log::info('UPDATE ROUTE REACHED', $request->all());
         Log::info('Student Object', [
@@ -351,7 +353,7 @@ class StudentsController extends Controller
             'a_level_combination' => 'nullable|string|max:50',
             'applying_section' => 'required|in:' . implode(',', array_column(ApplyingSection::cases(), 'value')),
             'id_type' => 'required|in:' . implode(',', array_column(IDType::cases(), 'value')),
-            'id_no' => 'required|string|max:100|unique:students,id_no,' . $student->id,
+            'id_no' => 'required|string|max:100|unique:Student,id_no,' . $student->id,
             'id_image_path' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
             'identification_image' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
 
@@ -555,14 +557,118 @@ class StudentsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(students $students)
+    public function destroy(Student $students)
     {
         $students->delete();
         return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
     }
 
-    // StudentController.php
-    // public function print(students $student)
+
+
+    public function updateSponsorship(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required|exists:students,id',
+            'sponsorship_type' => 'required|in:private,government',
+            'reference_number' => 'nullable|required_if:sponsorship_type,government|string|max:100',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $student = Student::find($request->student_id);
+
+        $student->assignSponsorship(
+            $request->sponsorship_type,
+            $request->reference_number,
+            'Updated from student list by ' . Auth::user()->name
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sponsorship updated to ' . ($request->sponsorship_type === 'government' ? 'UPE/USE' : 'Private')
+        ]);
+    }
+
+    public function bulkSponsorship(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'student_ids' => 'required|string',
+            'sponsorship_type' => 'required|in:private,government',
+            'reference_prefix' => 'nullable|string|max:50',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $studentIds = explode(',', $request->student_ids);
+        $count = 0;
+
+        foreach ($studentIds as $studentId) {
+            $student = Student::find($studentId);
+            if ($student) {
+
+                $reference = null;
+                if ($request->sponsorship_type === 'government') {
+
+                    if ($request->reference_prefix) {
+                        $reference = $request->reference_prefix . '-' . str_pad($studentId, 4, '0', STR_PAD_LEFT);
+                    } else {
+
+                        $reference = 'UPE/' . date('Y') . '/' . str_pad($studentId, 4, '0', STR_PAD_LEFT);
+                    }
+                }
+
+                $student->assignSponsorship(
+                    $request->sponsorship_type,
+                    $reference,
+                    'Bulk update on ' . now()->toDateString() . ' by ' . Auth::user()->name
+                );
+                $count++;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "$count students updated to " . ($request->sponsorship_type === 'government' ? 'UPE/USE sponsorship' : 'private sponsorship')
+        ]);
+    }
+
+    public function governmentSponsored(Request $request)
+    {
+        $query = Student::whereHas('currentSponsorship', function ($q) {
+            $q->where('type', 'government');
+        })->with(['class', 'currentSponsorship']);
+
+        
+        if ($request->filled('class_id')) {
+            $query->where('class_id', $request->class_id);
+        }
+
+        if ($request->filled('gender')) {
+            $query->where('gender', $request->gender);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'LIKE', "%{$search}%")
+                    ->orWhere('last_name', 'LIKE', "%{$search}%")
+                    ->orWhere('admission_number', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $students = $query->orderBy('first_name')->paginate(20)->withQueryString();
+
+        $classes = Classes::orderBy('name')->get();
+        $currentClass = $request->class_id ? Classes::find($request->class_id) : null;
+
+        return view('students.government-sponsored', compact('students', 'classes', 'currentClass'));
+    }
+
+    // public function print(Student $student)
     // {
     //     $student->load(['user', 'academicHistories', 'medicalHistory', 'disciplineHistory', 'careerAspiration']);
     //     return view('students.print', compact('student'));

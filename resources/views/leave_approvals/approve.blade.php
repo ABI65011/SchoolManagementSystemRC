@@ -6,6 +6,7 @@
         .approval-card {
             border-left: 4px solid #007bff;
         }
+
         .stage-badge {
             font-size: 0.9rem;
             padding: 0.5em 1em;
@@ -28,10 +29,10 @@
                                     <i class="fas fa-gavel mr-2"></i>
                                     Reviewed by <span class="text-info">
                                         {{ $approval->approver_role }}
-                                        </span>
+                                    </span>
                                 </h3>
                                 <div class="card-tools">
-                                    <span class="badge badge-info stage-badge">
+                                    <span class="badge text-bg-info stage-badge">
                                         <i class="fas fa-user-check mr-2"></i>
                                         {{ $approval->approver->name }}
                                     </span>
@@ -46,7 +47,8 @@
                                         <div class="col-md-6">
                                             <table class="table table-sm table-borderless mb-0">
                                                 <tr>
-                                                    <td class="font-weight-bold text-muted" style="width: 30%">Employee:</td>
+                                                    <td class="font-weight-bold text-muted" style="width: 30%">Employee:
+                                                    </td>
                                                     <td>{{ $approval->application->employee->user->name ?? '—' }}</td>
                                                 </tr>
                                                 <tr>
@@ -60,7 +62,8 @@
                                                 <tr>
                                                     <td class="font-weight-bold text-muted" style="width: 30%">Type:</td>
                                                     <td>
-                                                        <span class="badge badge-secondary">{{ $approval->application->type ?? '—' }}</span>
+                                                        <span
+                                                            class="badge text-bg-secondary">{{ $approval->application->type ?? '—' }}</span>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -85,7 +88,8 @@
 
                                     <div class="form-group mb-4">
                                         <label class="form-label font-weight-bold">
-                                            <i class="fas fa-tasks mr-1"></i>&nbsp;Decision <span class="text-danger">*</span>
+                                            <i class="fas fa-tasks mr-1"></i>&nbsp;Decision <span
+                                                class="text-danger">*</span>
                                         </label>
                                         @php
                                             use App\Helpers\LeaveAction;
@@ -94,16 +98,22 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="custom-control custom-radio mb-2">
-                                                    <input type="radio" id="actionApprove" name="action" value="{{ LeaveAction::Approved->value }}" class="custom-control-input" required>
-                                                    <label class="custom-control-label text-success font-weight-bold" for="actionApprove">
+                                                    <input type="radio" id="actionApprove" name="action"
+                                                        value="{{ LeaveAction::Approved->value }}"
+                                                        class="custom-control-input" required>
+                                                    <label class="custom-control-label text-success font-weight-bold"
+                                                        for="actionApprove">
                                                         <i class="fas fa-check-circle mr-1"></i> Approve
                                                     </label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="custom-control custom-radio mb-2">
-                                                    <input type="radio" id="actionReject" name="action" value="{{ LeaveAction::Rejected->value }}" class="custom-control-input" required>
-                                                    <label class="custom-control-label text-danger font-weight-bold" for="actionReject">
+                                                    <input type="radio" id="actionReject" name="action"
+                                                        value="{{ LeaveAction::Rejected->value }}"
+                                                        class="custom-control-input" required>
+                                                    <label class="custom-control-label text-danger font-weight-bold"
+                                                        for="actionReject">
                                                         <i class="fas fa-times-circle mr-1"></i> Reject
                                                     </label>
                                                 </div>
@@ -121,7 +131,8 @@
                                         <label class="form-label font-weight-bold">
                                             <i class="fas fa-comment-alt mr-1"></i>&nbsp;Comment (Optional)
                                         </label>
-                                        <textarea name="comment" rows="4" class="form-control" placeholder="Enter your comments or remarks regarding this decision..."></textarea>
+                                        <textarea name="comment" rows="4" class="form-control"
+                                            placeholder="Enter your comments or remarks regarding this decision..."></textarea>
                                     </div>
 
                                     <div class="d-flex justify-content-between">

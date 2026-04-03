@@ -117,7 +117,9 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="info-box p-2 rounded d-flex align-items-center">
-                                        <span class="rounded-circle bg-success elevation-1 d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                        <span
+                                            class="rounded-circle bg-success elevation-1 d-flex justify-content-center align-items-center me-3"
+                                            style="width: 40px; height: 40px; flex-shrink: 0;">
                                             <i class="fas fa-user-tie text-white"></i>
                                         </span>
                                         <span class="info-box-text font-weight-bold d-block">Supervisor: &nbsp;</span>
@@ -128,7 +130,9 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="info-box p-2 rounded d-flex align-items-center">
-                                        <span class="rounded-circle bg-warning elevation-1 d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                        <span
+                                            class="rounded-circle bg-warning elevation-1 d-flex justify-content-center align-items-center me-3"
+                                            style="width: 40px; height: 40px; flex-shrink: 0;">
                                             <i class="fas fa-user-clock text-white" style="font-size: 0.8rem;"></i>
                                         </span>
                                         <span class="info-box-textfont-weight-bold d-block">Replacement: &nbsp;</span>
@@ -139,7 +143,9 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="info-box p-2 rounded d-flex align-items-center">
-                                        <span class="rounded-circle bg-info elevation-1 d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                        <span
+                                            class="rounded-circle bg-info elevation-1 d-flex justify-content-center align-items-center me-3"
+                                            style="width: 40px; height: 40px; flex-shrink: 0;">
                                             <i class="fas fa-clock text-white" style="font-size: 0.8rem;"></i>
                                         </span>
                                         <span class="info-box-text font-weight-bold d-block">Last Updated: &nbsp;</span>
@@ -201,7 +207,7 @@
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <strong class="text-sm">{{ $step->approver_role }}</strong>
                                                 <span
-                                                    class="badge badge-{{ $step->action === 'Approved' ? 'success' : ($step->action === 'Rejected' ? 'danger' : 'secondary') }} badge-sm">
+                                                    class="badge text-bg-{{ $step->action === 'Approved' ? 'success' : ($step->action === 'Rejected' ? 'danger' : 'secondary') }} badge-sm">
                                                     {{ $step->action ?? 'Pending' }}
                                                 </span>
                                             </div>

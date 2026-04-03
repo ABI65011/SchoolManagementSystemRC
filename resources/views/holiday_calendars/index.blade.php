@@ -31,9 +31,7 @@
             <div class="col-lg-2 col-md-4 col-6 mb-2">
                 <div class="small-box text-bg-primary">
                     <div class="inner py-3">
-                        <h3
-                        id="stat-total"
-                        >{{ $total }}</h3>
+                        <h3 id="stat-total">{{ $total }}</h3>
                         <p>Total Holidays</p>
                     </div>
                     <svg class="w-6 h-6 text-gray-800 dark:text-white small-box-icon position-absolute top-0 end-0 m-3"
@@ -48,9 +46,7 @@
             <div class="col-lg-2 col-md-4 col-6 mb-2">
                 <div class="small-box text-bg-warning">
                     <div class="inner py-3">
-                        <h3
-                        id="stat-public"
-                        >{{ $publicHolidays }}</h3>
+                        <h3 id="stat-public">{{ $publicHolidays }}</h3>
                         <p>Public Holidays</p>
                     </div>
                     <svg class="w-6 h-6 text-gray-800 dark:text-white small-box-icon position-absolute top-0 end-0 m-3"
@@ -64,9 +60,7 @@
             <div class="col-lg-2 col-md-4 col-6 mb-2">
                 <div class="small-box text-bg-danger">
                     <div class="inner py-3">
-                        <h3
-                        id="stat-school"
-                        >{{ $schoolHolidays }}</h3>
+                        <h3 id="stat-school">{{ $schoolHolidays }}</h3>
                         <p>School Holidays</p>
                     </div>
                     <svg class="w-6 h-6 text-gray-800 dark:text-white small-box-icon position-absolute top-0 end-0 m-3"
@@ -80,9 +74,7 @@
             <div class="col-lg-2 col-md-4 col-6 mb-2">
                 <div class="small-box text-bg-success">
                     <div class="inner py-3">
-                        <h3
-                        id="stat-national"
-                        >{{ $nationalHolidays }}</h3>
+                        <h3 id="stat-national">{{ $nationalHolidays }}</h3>
                         <p>National Holidays</p>
                     </div>
                     <svg class="w-6 h-6 text-gray-800 dark:text-white small-box-icon position-absolute top-0 end-0 m-3"
@@ -96,9 +88,7 @@
             <div class="col-lg-2 col-md-4 col-6 mb-2">
                 <div class="small-box text-bg-info">
                     <div class="inner py-3">
-                        <h3
-                        id="stat-religious"
-                        >{{ $religiousHolidays }}</h3>
+                        <h3 id="stat-religious">{{ $religiousHolidays }}</h3>
                         <p>Religious Holidays</p>
                     </div>
                     <svg class="w-6 h-6 text-gray-800 dark:text-white small-box-icon position-absolute top-0 end-0 m-3"
@@ -112,9 +102,7 @@
             <div class="col-lg-2 col-md-4 col-6 mb-2">
                 <div class="small-box text-bg-secondary">
                     <div class="inner py-3">
-                        <h3
-                        id="stat-other"
-                        >{{ $otherHolidays }}</h3>
+                        <h3 id="stat-other">{{ $otherHolidays }}</h3>
                         <p>Other Holidays</p>
                     </div>
                     <svg class="w-6 h-6 text-gray-800 dark:text-white small-box-icon position-absolute top-0 end-0 m-3"
@@ -363,254 +351,254 @@
             explanation.style.display = this.value !== 'none' ? 'block' : 'none';
         });
     </script>
-   <script>
-    let calendar;
-    let activeFilters = new Set(['all']);
-    let allEvents = [];
+    <script>
+        let calendar;
+        let activeFilters = new Set(['all']);
+        let allEvents = [];
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const calendarEl = document.getElementById('holidayCalendar');
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('holidayCalendar');
 
-        if (!calendarEl) {
-            console.error('Calendar element not found!');
-            return;
-        }
-
-        calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: ''
-            },
-            height: 'auto',
-            selectable: true,
-            selectMirror: true,
-            dayMaxEvents: 3,
-            moreLinkClick: 'popover',
-            weekends: true,
-
-            eventSourceFailure: function(error) {
-                console.error('Event source failed:', error);
-            },
-
-            events: function(fetchInfo, successCallback, failureCallback) {
-                console.log('Fetching events...');
-
-
-                if (allEvents.length > 0) {
-                    console.log('Using cached events:', allEvents.length);
-                    successCallback(filterEvents(allEvents));
-                    return;
-                }
-
-                fetch('{{ route('holiday-calendars.events') }}')
-                    .then(response => {
-                        console.log('Response status:', response.status);
-                        if (!response.ok) throw new Error('Network response was not ok: ' +
-                            response.status);
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('Received data:', data);
-                        allEvents = data;
-                        successCallback(filterEvents(allEvents));
-                    })
-                    .catch(error => {
-                        console.error('Error fetching holidays:', error);
-                        failureCallback(error);
-                    });
-            },
-
-            eventClick: function(info) {
-                info.jsEvent.preventDefault();
-                showHolidayModal(info.event);
-            },
-
-            dateClick: function(info) {
-                showQuickAddModal(info.date);
+            if (!calendarEl) {
+                console.error('Calendar element not found!');
+                return;
             }
+
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: ''
+                },
+                height: 'auto',
+                selectable: true,
+                selectMirror: true,
+                dayMaxEvents: 3,
+                moreLinkClick: 'popover',
+                weekends: true,
+
+                eventSourceFailure: function(error) {
+                    console.error('Event source failed:', error);
+                },
+
+                events: function(fetchInfo, successCallback, failureCallback) {
+                    console.log('Fetching events...');
+
+
+                    if (allEvents.length > 0) {
+                        console.log('Using cached events:', allEvents.length);
+                        successCallback(filterEvents(allEvents));
+                        return;
+                    }
+
+                    fetch('{{ route('holiday-calendars.events') }}')
+                        .then(response => {
+                            console.log('Response status:', response.status);
+                            if (!response.ok) throw new Error('Network response was not ok: ' +
+                                response.status);
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Received data:', data);
+                            allEvents = data;
+                            successCallback(filterEvents(allEvents));
+                        })
+                        .catch(error => {
+                            console.error('Error fetching holidays:', error);
+                            failureCallback(error);
+                        });
+                },
+
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault();
+                    showHolidayModal(info.event);
+                },
+
+                dateClick: function(info) {
+                    showQuickAddModal(info.date);
+                }
+            });
+
+            calendar.render();
+            console.log('Calendar rendered');
         });
 
-        calendar.render();
-        console.log('Calendar rendered');
-    });
 
+        function toggleFilter(filterType) {
+            const btn = document.querySelector(`[data-filter="${filterType}"]`);
+            if (!btn) return;
 
-    function toggleFilter(filterType) {
-        const btn = document.querySelector(`[data-filter="${filterType}"]`);
-        if (!btn) return;
+            const allTypes = ['Public Holiday', 'School Holiday', 'Religious Holiday', 'National Holiday', 'Other'];
+            const allBtn = document.querySelector('[data-filter="all"]');
 
-        const allTypes = ['Public Holiday', 'School Holiday', 'Religious Holiday', 'National Holiday', 'Other'];
-        const allBtn = document.querySelector('[data-filter="all"]');
+            if (filterType === 'all') {
 
-        if (filterType === 'all') {
+                if (activeFilters.has('all')) {
 
-            if (activeFilters.has('all')) {
+                    activeFilters.clear();
+                    document.querySelectorAll('.holiday-filter').forEach(b => {
+                        b.classList.remove('active');
+                        b.classList.add('inactive');
+                    });
+                } else {
 
-                activeFilters.clear();
-                document.querySelectorAll('.holiday-filter').forEach(b => {
-                    b.classList.remove('active');
-                    b.classList.add('inactive');
-                });
-            } else {
-
-                activeFilters = new Set(['all', ...allTypes]);
-                document.querySelectorAll('.holiday-filter').forEach(b => {
-                    b.classList.add('active');
-                    b.classList.remove('inactive');
-                });
-            }
-        } else {
-
-            if (activeFilters.has(filterType)) {
-
-                activeFilters.delete(filterType);
-                btn.classList.remove('active');
-                btn.classList.add('inactive');
-
-
-                activeFilters.delete('all');
-                if (allBtn) {
-                    allBtn.classList.remove('active');
-                    allBtn.classList.add('inactive');
+                    activeFilters = new Set(['all', ...allTypes]);
+                    document.querySelectorAll('.holiday-filter').forEach(b => {
+                        b.classList.add('active');
+                        b.classList.remove('inactive');
+                    });
                 }
             } else {
 
-                activeFilters.add(filterType);
-                btn.classList.add('active');
-                btn.classList.remove('inactive');
+                if (activeFilters.has(filterType)) {
+
+                    activeFilters.delete(filterType);
+                    btn.classList.remove('active');
+                    btn.classList.add('inactive');
 
 
-                const allIndividualsSelected = allTypes.every(t => activeFilters.has(t));
-                if (allIndividualsSelected) {
-                    activeFilters.add('all');
+                    activeFilters.delete('all');
                     if (allBtn) {
-                        allBtn.classList.add('active');
-                        allBtn.classList.remove('inactive');
+                        allBtn.classList.remove('active');
+                        allBtn.classList.add('inactive');
+                    }
+                } else {
+
+                    activeFilters.add(filterType);
+                    btn.classList.add('active');
+                    btn.classList.remove('inactive');
+
+
+                    const allIndividualsSelected = allTypes.every(t => activeFilters.has(t));
+                    if (allIndividualsSelected) {
+                        activeFilters.add('all');
+                        if (allBtn) {
+                            allBtn.classList.add('active');
+                            allBtn.classList.remove('inactive');
+                        }
                     }
                 }
             }
+
+            console.log('Active filters:', Array.from(activeFilters));
+
+
+            if (calendar) {
+                calendar.removeAllEvents();
+                const newFiltered = filterEvents(allEvents);
+                calendar.addEventSource(newFiltered);
+            }
         }
 
-        console.log('Active filters:', Array.from(activeFilters));
+        function filterEvents(events) {
+            if (!events || events.length === 0) return [];
 
 
-        if (calendar) {
-            calendar.removeAllEvents();
-            const newFiltered = filterEvents(allEvents);
-            calendar.addEventSource(newFiltered);
-        }
-    }
-
-    function filterEvents(events) {
-        if (!events || events.length === 0) return [];
+            if (activeFilters.has('all')) return events;
 
 
-        if (activeFilters.has('all')) return events;
-
-
-        return events.filter(event => {
-            const type = event.extendedProps?.type;
-            return activeFilters.has(type);
-        });
-    }
-
-    function changeView(viewName) {
-        if (calendar) {
-            calendar.changeView(viewName);
-        }
-    }
-
-    function calendarRefetch() {
-        
-        allEvents = [];
-        if (calendar) {
-            calendar.refetchEvents();
-        }
-    }
-
-    function showHolidayModal(event) {
-        const props = event.extendedProps || {};
-        const date = new Date(event.start);
-
-        document.getElementById('modalTitle').textContent = event.title || 'Holiday Details';
-        document.getElementById('modalName').textContent = event.title || '';
-        document.getElementById('modalDate').textContent = date.toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-        document.getElementById('modalDay').textContent = date.toLocaleDateString('en-US', {
-            weekday: 'long'
-        });
-
-        const typeBadge = document.getElementById('modalType');
-        typeBadge.textContent = props.type || 'Unknown';
-        typeBadge.style.cssText = getBadgeClass(props.type);
-        typeBadge.className = 'badge badge-lg';
-
-        const descriptionRow = document.getElementById('descriptionRow');
-        const modalDescription = document.getElementById('modalDescription');
-
-        if (props.description && props.description.trim() !== '') {
-            descriptionRow.style.display = 'table-row';
-            modalDescription.textContent = props.description;
-        } else {
-            descriptionRow.style.display = 'none';
-            modalDescription.textContent = '';
+            return events.filter(event => {
+                const type = event.extendedProps?.type;
+                return activeFilters.has(type);
+            });
         }
 
-        const createdRow = document.getElementById('modalCreatedRow');
-        if (props.created_at && createdRow) {
-            const createdDate = new Date(props.created_at);
-            document.getElementById('modalCreated').textContent = createdDate.toLocaleDateString();
-            createdRow.style.display = 'table-row';
-        } else if (createdRow) {
-            createdRow.style.display = 'none';
+        function changeView(viewName) {
+            if (calendar) {
+                calendar.changeView(viewName);
+            }
         }
 
-        document.getElementById('modalEditBtn').href = '{{ url('holiday-calendars') }}/' + event.id + '/edit';
-        document.getElementById('modalDeleteForm').action = '{{ url('holiday-calendars') }}/' + event.id;
+        function calendarRefetch() {
 
-        const modalEl = document.getElementById('holidayModal');
-        if (typeof $ !== 'undefined') {
-            $(modalEl).modal('show');
-        } else if (typeof bootstrap !== 'undefined') {
-            new bootstrap.Modal(modalEl).show();
-        } else {
-            modalEl.classList.add('show');
-            modalEl.style.display = 'block';
+            allEvents = [];
+            if (calendar) {
+                calendar.refetchEvents();
+            }
         }
-    }
 
-    function showQuickAddModal(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        document.getElementById('quickAddDate').value = `${year}-${month}-${day}`;
+        function showHolidayModal(event) {
+            const props = event.extendedProps || {};
+            const date = new Date(event.start);
 
-        const modalEl = document.getElementById('quickAddModal');
-        if (typeof $ !== 'undefined') {
-            $(modalEl).modal('show');
-        } else if (typeof bootstrap !== 'undefined') {
-            new bootstrap.Modal(modalEl).show();
-        } else {
-            modalEl.classList.add('show');
-            modalEl.style.display = 'block';
+            document.getElementById('modalTitle').textContent = event.title || 'Holiday Details';
+            document.getElementById('modalName').textContent = event.title || '';
+            document.getElementById('modalDate').textContent = date.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('modalDay').textContent = date.toLocaleDateString('en-US', {
+                weekday: 'long'
+            });
+
+            const typeBadge = document.getElementById('modalType');
+            typeBadge.textContent = props.type || 'Unknown';
+            typeBadge.style.cssText = getBadgeClass(props.type);
+            typeBadge.className = 'badge badge-lg';
+
+            const descriptionRow = document.getElementById('descriptionRow');
+            const modalDescription = document.getElementById('modalDescription');
+
+            if (props.description && props.description.trim() !== '') {
+                descriptionRow.style.display = 'table-row';
+                modalDescription.textContent = props.description;
+            } else {
+                descriptionRow.style.display = 'none';
+                modalDescription.textContent = '';
+            }
+
+            const createdRow = document.getElementById('modalCreatedRow');
+            if (props.created_at && createdRow) {
+                const createdDate = new Date(props.created_at);
+                document.getElementById('modalCreated').textContent = createdDate.toLocaleDateString();
+                createdRow.style.display = 'table-row';
+            } else if (createdRow) {
+                createdRow.style.display = 'none';
+            }
+
+            document.getElementById('modalEditBtn').href = '{{ url('holiday-calendars') }}/' + event.id + '/edit';
+            document.getElementById('modalDeleteForm').action = '{{ url('holiday-calendars') }}/' + event.id;
+
+            const modalEl = document.getElementById('holidayModal');
+            if (typeof $ !== 'undefined') {
+                $(modalEl).modal('show');
+            } else if (typeof bootstrap !== 'undefined') {
+                new bootstrap.Modal(modalEl).show();
+            } else {
+                modalEl.classList.add('show');
+                modalEl.style.display = 'block';
+            }
         }
-    }
 
-    function getBadgeClass(type) {
-        const classes = {
-            'Public Holiday': 'background-color: #4DB6AC; color: white;',
-            'School Holiday': 'background-color: #FF8A65; color: white;',
-            'Religious Holiday': 'background-color: #9575CD; color: white;',
-            'National Holiday': 'background-color: #81C784; color: white;',
-            'Other': 'background-color: #FFD54F; color: #333;'
-        };
-        return classes[type] || 'background-color: #64B5F6; color: white;';
-    }
-</script>
+        function showQuickAddModal(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            document.getElementById('quickAddDate').value = `${year}-${month}-${day}`;
+
+            const modalEl = document.getElementById('quickAddModal');
+            if (typeof $ !== 'undefined') {
+                $(modalEl).modal('show');
+            } else if (typeof bootstrap !== 'undefined') {
+                new bootstrap.Modal(modalEl).show();
+            } else {
+                modalEl.classList.add('show');
+                modalEl.style.display = 'block';
+            }
+        }
+
+        function getBadgeClass(type) {
+            const classes = {
+                'Public Holiday': 'background-color: #4DB6AC; color: white;',
+                'School Holiday': 'background-color: #FF8A65; color: white;',
+                'Religious Holiday': 'background-color: #9575CD; color: white;',
+                'National Holiday': 'background-color: #81C784; color: white;',
+                'Other': 'background-color: #FFD54F; color: #333;'
+            };
+            return classes[type] || 'background-color: #64B5F6; color: white;';
+        }
+    </script>
 @endsection

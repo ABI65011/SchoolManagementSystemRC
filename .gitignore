@@ -28,3 +28,15 @@ Thumbs.db
 /app/Http/Controllers/StaffController.php
 /resources/views/my-tests
 /app/Http/Controllers/AuthController.php
+/database/migrations/2026_03_05_102305_class.php
+/app/Models/Classes.php
+/app/Http/Controllers/SubjectController.php
+/app/Models/Stream.php
+/app/Models/Subject.php
+/database/migrations/2026_03_03_100308_create_subjects_table.php
+/database/migrations/2026_03_03_104305_create_classes_table.php
+/database/migrations/2026_03_03_104449_create_class_streams_table.php
+/database/migrations/2026_03_19_112225_modify_classes_table.php
+/
+/
+/
