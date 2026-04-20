@@ -300,7 +300,8 @@ class StudentsController extends Controller
             'medicalHistory',
             'disciplineHistory',
             'careerAspiration',
-            'user'
+            'user',
+            'sponsorships'
         ]);
         return view('profile_management.index', compact('student'));
     }
@@ -642,7 +643,7 @@ class StudentsController extends Controller
             $q->where('type', 'government');
         })->with(['class', 'currentSponsorship']);
 
-        
+
         if ($request->filled('class_id')) {
             $query->where('class_id', $request->class_id);
         }

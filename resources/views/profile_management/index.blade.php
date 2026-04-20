@@ -326,7 +326,7 @@
                             </div>
 
 
-                            {{-- Health & Conduct Card --}}
+                            {{-- Sponsorship & Support --}}
                             <div class="col-md-6">
                                 <div class="card shadow-sm border-0 h-100">
                                     <div class="card-header bg-transparent py-3">
@@ -426,13 +426,63 @@
                             <div class="card shadow-sm border-0 h-100">
                                 <div class="card-header bg-transparent py-3">
                                     <h6 class="mb-0 fw-semibold text-warning">
-                                        <i class="fa-solid fa-hand-holding-heart me-2 text-warning-emphasis"></i>Sponsorship & Support
+                                        <i class="fa-solid fa-hand-holding-heart me-2 text-warning-emphasis"></i>Sponsorship &
+                                        Support
                                     </h6>
                                 </div>
                                 <div class="card-body p-3">
 
-                                    <div class="d-flex align-items-start mb-3">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        @if ($student->sponsorships)
+                                            <div class="text-uppercase fw-semibold small text-muted mb-1"> Sponsorship Type:
+                                            </div>
+                                            <span class="text-capitalize">
+                                                {{ $student->currentSponsorship->type }}
+                                            </span>
+                                        @endif
                                     </div>
+                                    @if ($student->sponsorships && $student->currentSponsorship->start_date != null)
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <div class="text-uppercase fw-semibold small text-muted mb-1"> Sponsorship Start
+                                                Date:
+                                            </div>
+                                            <span class="text-capitalize">
+                                                {{ $student->currentSponsorship->start_date->format('Y-m-d') }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                    @if ($student->sponsorships && $student->currentSponsorship->end_date != null)
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <div class="text-uppercase fw-semibold small text-muted mb-1"> Sponsorship End
+                                                Date:
+                                            </div>
+                                            <span class="text-capitalize">
+                                                {{ $student->currentSponsorship->end_date->format('Y-m-d') }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                    @if ($student->sponsorships && $student->currentSponsorship->reference_number != null)
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <div class="text-uppercase fw-semibold small text-muted mb-1"> Sponsorship
+                                                Reference Number:
+                                            </div>
+                                            <span class="text-capitalize">
+                                                {{ $student->currentSponsorship->reference_number }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                    @hasanyrole('Admin|Super|Staff')
+                                    @if ($student->sponsorships && $student->currentSponsorship->approved_by != null)
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <div class="text-uppercase fw-semibold small text-muted mb-1"> Sponsorship
+                                                Approved By:
+                                            </div>
+                                            <span class="text-capitalize">
+                                                {{ $student->currentSponsorship->approvedBy->name ?? 'null' }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                    @endhasanyrole
                                 </div>
                             </div>
                         </div>
