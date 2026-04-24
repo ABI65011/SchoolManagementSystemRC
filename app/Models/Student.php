@@ -109,6 +109,17 @@ class Student extends Model
             ->where('is_active', true)
             ->orderBy('created_at', 'desc');
     }
+    public function todayCheckIn()
+    {
+        return $this->hasOne(StudentCheckIn::class)
+            ->where('check_in_date', now()->toDateString());
+    }
+
+    public function checkIns()
+    {
+        return $this->hasMany(StudentCheckIn::class);
+    }
+
 
     public function classes()
     {

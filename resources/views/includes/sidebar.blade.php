@@ -125,6 +125,20 @@
                         <p>Student Attendance</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('student-checkins.index') }}"
+                        class="nav-link  {{ request()->routeIs('student-checkins.') ? 'active' : '' }}">
+                        <i class="bi bi-people"></i>
+                        <p>Student Check In</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('student-leaves.index') }}"
+                        class="nav-link  {{ request()->routeIs('student-leaves.') ? 'active' : '' }}">
+                        <i class="bi bi-people"></i>
+                        <p>Student Leaves</p>
+                    </a>
+                </li>
                 @hasanyrole('Admin|Super')
                     <li class="nav-item">
                         <a href="{{ route('holiday-calendars.index') }}"

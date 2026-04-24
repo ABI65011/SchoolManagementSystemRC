@@ -21,6 +21,8 @@ use App\Http\Controllers\LeaveReportController;
 use App\Http\Controllers\ReportCardController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentAttendanceController;
+use App\Http\Controllers\StudentCheckInController;
+use App\Http\Controllers\StudentLeaveController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SubjectController;
 use Illuminate\Support\Facades\Route;
@@ -98,6 +100,25 @@ Route::middleware('auth', 'auth.session')->group(function () {
         Route::put('/students/{student}', 'update')->name('students.update');
         Route::delete('/students/{student}', 'destroy')->name('students.destroy');
         // Route::get('/students/{student}/print', 'print')->name('students.print');
+    });
+
+    Route::controller(StudentCheckInController::class)->group(function () {
+        Route::get('/student-checkins', 'index')->name('student-checkins.index');
+        Route::post('/student-checkins/{student}/check-in', 'checkin')->name('student-checkins.check-in');
+        Route::get('student-checkins/summary', 'summary')->name('student-checkins.summary');
+    });
+
+    Route::controller(StudentLeaveController::class)->prefix('student-leaves')->name('student-leaves.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{studentLeave}', 'show')->name('show');
+        Route::post('/{studentLeave}/approve', 'approve')->name('approve');
+        Route::post('/{studentLeave}/deny', 'deny')->name('deny');
+        Route::post('/{studentLeave}/sign-out', 'signOut')->name('sign-out');
+        Route::post('/{studentLeave}/sign-in', 'signIn')->name('sign-in');
+        Route::get('/active/list', 'activeLeaves')->name('active-list');
+        Route::get('/overdue/list', 'overdueLeaves')->name('overdue-list');
     });
 
     Route::resource('staff', StaffController::class);
@@ -264,8 +285,6 @@ Route::middleware('auth', 'auth.session')->group(function () {
             Route::patch('/{location}/set-default', [AdminAttendanceLocationController::class, 'setDefault'])
                 ->name('set-default');
         });
-
-
     });
 });
 Route::middleware(['auth'])->get('docs/{student}/{type}/{file}', [DocViewerController::class, 'show'])
